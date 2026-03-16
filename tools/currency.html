@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="三角洲行动哈夫币汇率追踪 - 实时汇率、历史走势、交易建议">
+  <title>哈夫币汇率 - 三角洲交易</title>
+  
+  <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../css/design-system.css">
+  <link rel="stylesheet" href="../css/components.css">
+  
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('delta-trade-theme');
+      if (savedTheme && savedTheme !== 'system') {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      }
+    })();
+  </script>
+  
+  <style>
+    .rate-hero {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      padding: var(--space-16) 0;
+      text-align: center;
+      border-bottom: 1px solid var(--border-primary);
+    }
+    
+    .rate-hero h1 {
+      font-size: var(--text-4xl);
+      margin-bottom: var(--space-4);
+    }
+    
+    .current-rate {
+      display: inline-flex;
+      align-items: baseline;
+      gap: var(--space-2);
+      background: rgba(255,255,255,0.05);
+      padding: var(--space-6) var(--space-10);
+      border-radius: var(--radius-2xl);
+      border: 1px solid var(--border-primary);
+    }
+    
+    .rate-value {
+      font-size: 72px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #f59e0b, #ef4444);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .rate-unit {
+      font-size: var(--text-xl);
+      color: var(--text-secondary);
+    }
+    
+    .rate-change {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      padding: var(--space-1) var(--space-3);
+      border-radius: var(--radius-full);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      margin-left: var(--space-4);
+    }
+    
+    .rate-change.up { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
+    .rate-change.down { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+    
+    .rate-meta {
+      margin-top: var(--space-4);
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+    }
+    
+    .rate-layout {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: var(--space-8);
+      padding: var(--space-8) 0;
+    }
+    
+    @media (max-width: 1024px) {
+      .rate-layout { grid-template-columns: 1fr; }
+      .rate-value { font-size: 48px; }
+    }
+    
+    .chart-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+    }
+    
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-6);
+    }
+    
+    .chart-title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+    }
+    
+    .chart-tabs {
+      display: flex;
+      gap: var(--space-2);
+    }
+    
+    .chart-tab {
+      padding: var(--space-2) var(--space-4);
+      border-radius: var(--radius-md);
+      border: none;
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: var(--text-sm);
+      transition: all var(--transition-fast);
+    }
+    
+    .chart-tab.active {
+      background: var(--primary-500);
+      color: white;
+    }
+    
+    .chart-area {
+      height: 300px;
+      background: linear-gradient(to bottom, rgba(51, 169, 255, 0.1) 0%, transparent 100%);
+      border-radius: var(--radius-lg);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    /* 模拟折线图 */
+    .chart-line {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 100%;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 150' preserveAspectRatio='none'%3E%3Cpath d='M0,100 Q50,80 100,90 T200,60 T300,85 T400,50' stroke='%2333a9ff' stroke-width='2' fill='none'/%3E%3C/svg%3E") no-repeat center;
+      background-size: 100% 60%;
+    }
+    
+    .chart-grid {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: var(--space-4);
+    }
+    
+    .chart-grid-line {
+      border-bottom: 1px dashed var(--border-primary);
+      display: flex;
+      justify-content: flex-end;
+    }
+    
+    .chart-grid-label {
+      font-size: 10px;
+      color: var(--text-tertiary);
+      background: var(--bg-card);
+      padding: 0 var(--space-2);
+    }
+    
+    .info-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-xl);
+      padding: var(--space-5);
+      margin-bottom: var(--space-4);
+    }
+    
+    .info-card-title {
+      font-size: var(--text-base);
+      font-weight: 600;
+      margin-bottom: var(--space-4);
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--border-primary);
+    }
+    
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      padding: var(--space-2) 0;
+      border-bottom: 1px solid var(--border-primary);
+    }
+    
+    .stat-row:last-child {
+      border-bottom: none;
+    }
+    
+    .stat-label {
+      color: var(--text-secondary);
+      font-size: var(--text-sm);
+    }
+    
+    .stat-value {
+      font-weight: 600;
+      font-size: var(--text-sm);
+    }
+    
+    .tip-box {
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(16, 185, 129, 0.1));
+      border: 1px solid var(--success-500);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      margin-top: var(--space-4);
+    }
+    
+    .tip-title {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-weight: 600;
+      margin-bottom: var(--space-2);
+      color: var(--success-500);
+    }
+    
+    .tip-content {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+    
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .history-table th,
+    .history-table td {
+      padding: var(--space-3);
+      text-align: left;
+      border-bottom: 1px solid var(--border-primary);
+      font-size: var(--text-sm);
+    }
+    
+    .history-table th {
+      color: var(--text-tertiary);
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a href="../index.html" class="navbar-brand">
+        <img src="https://buff.163.com/static/images/site/logo.png" alt="BUFF" style="height:28px;" class="logo-dark">
+        <img src="../images/buff-logo-dark.png" alt="BUFF" style="height:28px;" class="logo-light">
+        <span>三角洲交易</span>
+      </a>
+      
+      <ul class="navbar-nav hide-mobile">
+        <li><a href="../index.html" class="navbar-link">首页</a></li>
+        <li><a href="../marketplace.html" class="navbar-link">道具市场</a></li>
+        <li><a href="weapons.html" class="navbar-link">武器数据库</a></li>
+        <li><a href="guides.html" class="navbar-link">攻略中心</a></li>
+        <li><a href="currency.html" class="navbar-link active">哈夫币汇率</a></li>
+      </ul>
+      
+      <div class="navbar-actions">
+        <div class="theme-toggle hide-mobile" role="radiogroup" aria-label="主题选择">
+          <button class="theme-toggle-option" data-theme="light" role="radio">☀️</button>
+          <button class="theme-toggle-option active" data-theme="dark" role="radio">🌙</button>
+        </div>
+        <a href="../auth/login.html" class="btn btn-secondary btn-sm hide-mobile">登录</a>
+        <a href="../auth/register.html" class="btn btn-primary btn-sm">免费注册</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 汇率展示区 -->
+  <section class="rate-hero">
+    <div class="container">
+      <h1>💰 哈夫币汇率</h1>
+      <p style="color: var(--text-secondary); margin-bottom: var(--space-6);">三角洲行动游戏内货币实时参考汇率</p>
+      
+      <div class="current-rate">
+        <span class="rate-value" id="currentRate">0.85</span>
+        <span class="rate-unit">元 / 万哈夫币</span>
+        <span class="rate-change up" id="rateChange">↑ 2.4%</span>
+      </div>
+      
+      <div class="rate-meta">
+        <span>⏱️ 更新时间：2024-03-16 19:00</span>
+        <span style="margin-left: var(--space-4);">📊 数据来源：玩家交易市场均价</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 主内容区 -->
+  <div class="container">
+    <div class="rate-layout">
+      <!-- 图表区 -->
+      <div>
+        <div class="chart-container">
+          <div class="chart-header">
+            <h2 class="chart-title">📈 汇率走势</h2>
+            <div class="chart-tabs">
+              <button class="chart-tab active">7天</button>
+              <button class="chart-tab">30天</button>
+              <button class="chart-tab">90天</button>
+            </div>
+          </div>
+          <div class="chart-area">
+            <div class="chart-grid">
+              <div class="chart-grid-line"><span class="chart-grid-label">1.00</span></div>
+              <div class="chart-grid-line"><span class="chart-grid-label">0.90</span></div>
+              <div class="chart-grid-line"><span class="chart-grid-label">0.80</span></div>
+              <div class="chart-grid-line"><span class="chart-grid-label">0.70</span></div>
+              <div class="chart-grid-line"><span class="chart-grid-label">0.60</span></div>
+            </div>
+            <div class="chart-line"></div>
+          </div>
+        </div>
+        
+        <!-- 历史数据表 -->
+        <div class="chart-container" style="margin-top: var(--space-6);">
+          <h3 class="chart-title" style="margin-bottom: var(--space-4);">📅 近期汇率记录</h3>
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>日期</th>
+                <th>汇率 (元/万)</th>
+                <th>涨跌</th>
+                <th>交易量</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>2024-03-16</td>
+                <td>0.85</td>
+                <td style="color: #22c55e;">+2.4%</td>
+                <td>1,250万</td>
+              </tr>
+              <tr>
+                <td>2024-03-15</td>
+                <td>0.83</td>
+                <td style="color: #22c55e;">+1.2%</td>
+                <td>980万</td>
+              </tr>
+              <tr>
+                <td>2024-03-14</td>
+                <td>0.82</td>
+                <td style="color: #ef4444;">-0.5%</td>
+                <td>1,100万</td>
+              </tr>
+              <tr>
+                <td>2024-03-13</td>
+                <td>0.82</td>
+                <td style="color: #22c55e;">+3.8%</td>
+                <td>2,300万</td>
+              </tr>
+              <tr>
+                <td>2024-03-12</td>
+                <td>0.79</td>
+                <td style="color: #ef4444;">-1.3%</td>
+                <td>890万</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <!-- 侧边栏 -->
+      <aside>
+        <!-- 汇率统计 -->
+        <div class="info-card">
+          <h3 class="info-card-title">📊 汇率统计</h3>
+          <div class="stat-row">
+            <span class="stat-label">今日最高</span>
+            <span class="stat-value" style="color: #22c55e;">0.87 元/万</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">今日最低</span>
+            <span class="stat-value" style="color: #ef4444;">0.82 元/万</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">7日均价</span>
+            <span class="stat-value">0.83 元/万</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">30日均价</span>
+            <span class="stat-value">0.81 元/万</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">历史最高</span>
+            <span class="stat-value">1.20 元/万</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">历史最低</span>
+            <span class="stat-value">0.45 元/万</span>
+          </div>
+        </div>
+        
+        <!-- 快速计算器 -->
+        <div class="info-card">
+          <h3 class="info-card-title">🧮 快速换算</h3>
+          <div style="margin-bottom: var(--space-3);">
+            <label style="font-size: var(--text-sm); color: var(--text-secondary); display: block; margin-bottom: var(--space-1);">哈夫币数量（万）</label>
+            <input type="number" id="hafInput" value="100" style="width: 100%; padding: var(--space-3); border-radius: var(--radius-md); border: 1px solid var(--border-primary); background: var(--bg-secondary); color: var(--text-primary);" oninput="calculateValue()">
+          </div>
+          <div style="text-align: center; padding: var(--space-4); background: var(--bg-secondary); border-radius: var(--radius-md);">
+            <div style="font-size: var(--text-sm); color: var(--text-tertiary);">约等于</div>
+            <div style="font-size: var(--text-2xl); font-weight: 700; color: var(--accent-500);" id="rmbValue">¥85.00</div>
+          </div>
+        </div>
+        
+        <!-- 交易建议 -->
+        <div class="tip-box">
+          <div class="tip-title">💡 交易建议</div>
+          <div class="tip-content">
+            当前汇率处于<strong style="color: var(--success-500);">上涨趋势</strong>，建议：
+            <ul style="margin-top: var(--space-2); padding-left: var(--space-4);">
+              <li>卖家：可适当观望，等待更高价位</li>
+              <li>买家：如需大量购入，建议分批买入</li>
+            </ul>
+          </div>
+        </div>
+        
+        <!-- 风险提示 -->
+        <div class="info-card" style="border-color: var(--warning-500);">
+          <h3 class="info-card-title" style="color: var(--warning-500);">⚠️ 风险提示</h3>
+          <p style="font-size: var(--text-sm); color: var(--text-secondary); line-height: 1.6;">
+            1. 本页汇率仅供参考，实际交易价格以双方协商为准<br>
+            2. 游戏内货币交易存在风险，请通过正规渠道交易<br>
+            3. 请勿轻信私下交易，谨防诈骗
+          </p>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- 页脚 -->
+  <footer style="background: var(--bg-secondary); padding: var(--space-8) 0; margin-top: var(--space-12); border-top: 1px solid var(--border-primary);">
+    <div class="container" style="text-align: center;">
+      <p style="color: var(--text-tertiary); font-size: var(--text-sm);">© 2024 三角洲交易. 保留所有权利。</p>
+    </div>
+  </footer>
+
+  <script src="../js/theme.js"></script>
+  <script>
+    // 快速换算
+    function calculateValue() {
+      const hafCoins = parseFloat(document.getElementById('hafInput').value) || 0;
+      const rate = 0.85; // 当前汇率
+      const value = (hafCoins * rate).toFixed(2);
+      document.getElementById('rmbValue').textContent = `¥${value}`;
+    }
+    
+    // 图表Tab切换
+    document.querySelectorAll('.chart-tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.chart-tab').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
