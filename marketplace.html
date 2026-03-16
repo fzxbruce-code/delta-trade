@@ -334,13 +334,16 @@
       
       <!-- 主内容区 -->
       <main class="main-content">
-        <!-- 购买/租赁切换 -->
+        <!-- 购买/租赁/求购切换 -->
         <div class="mode-tabs" style="display:flex;gap:var(--space-2);margin-bottom:var(--space-4);">
           <button class="mode-tab active" data-mode="buy" onclick="switchMode('buy')" style="flex:1;padding:var(--space-3);border-radius:var(--radius-lg);border:2px solid var(--primary-500);background:var(--primary-500);color:white;font-weight:600;cursor:pointer;transition:all 0.2s;">
-            🛒 购买道具
+            🛒 购买
           </button>
           <button class="mode-tab" data-mode="rent" onclick="switchMode('rent')" style="flex:1;padding:var(--space-3);border-radius:var(--radius-lg);border:2px solid var(--border-primary);background:transparent;color:var(--text-secondary);font-weight:600;cursor:pointer;transition:all 0.2s;">
-            ⏰ 租赁道具
+            ⏰ 租赁
+          </button>
+          <button class="mode-tab" data-mode="wtb" onclick="switchMode('wtb')" style="flex:1;padding:var(--space-3);border-radius:var(--radius-lg);border:2px solid var(--border-primary);background:transparent;color:var(--text-secondary);font-weight:600;cursor:pointer;transition:all 0.2s;">
+            📢 求购
           </button>
         </div>
         
@@ -963,6 +966,97 @@
           <button class="btn btn-primary" onclick="resetFilters()">重置筛选</button>
         </div>
         
+        <!-- 求购列表（默认隐藏） -->
+        <div class="wtb-grid" id="wtbGrid" style="display:none;">
+          <!-- 发布求购按钮 -->
+          <div style="grid-column: 1/-1; margin-bottom: var(--space-4);">
+            <button class="btn btn-primary" onclick="alert('发布求购功能开发中...')" style="width:100%;">
+              ➕ 发布求购需求
+            </button>
+          </div>
+          
+          <!-- 求购卡片1 -->
+          <div class="wtb-card" style="background:var(--bg-card);border:2px solid var(--primary-400);border-radius:var(--radius-xl);padding:var(--space-4);position:relative;">
+            <div style="position:absolute;top:-10px;left:16px;background:var(--primary-500);color:white;padding:2px 10px;border-radius:var(--radius-full);font-size:11px;font-weight:600;">求购中</div>
+            <div style="display:flex;gap:var(--space-4);align-items:center;">
+              <div style="width:80px;height:80px;background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;">
+                <span style="font-size:32px;">🔫</span>
+              </div>
+              <div style="flex:1;">
+                <h4 style="font-weight:600;margin-bottom:var(--space-1);">AK-12 突击步枪</h4>
+                <div style="font-size:var(--text-sm);color:var(--text-secondary);margin-bottom:var(--space-2);">
+                  磨损要求：<span style="color:#22c55e;font-weight:600;">崭新出厂 (FN)</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <div>
+                    <span style="color:var(--text-tertiary);font-size:var(--text-xs);">愿出价</span>
+                    <span style="color:var(--accent-500);font-size:var(--text-xl);font-weight:700;margin-left:var(--space-1);">¥280</span>
+                  </div>
+                  <button class="btn btn-secondary btn-sm">响应求购</button>
+                </div>
+              </div>
+            </div>
+            <div style="margin-top:var(--space-3);padding-top:var(--space-3);border-top:1px solid var(--border-primary);display:flex;justify-content:space-between;font-size:var(--text-xs);color:var(--text-tertiary);">
+              <span>买家：收藏家小李</span>
+              <span>发布于 2小时前</span>
+            </div>
+          </div>
+          
+          <!-- 求购卡片2 -->
+          <div class="wtb-card" style="background:var(--bg-card);border:2px solid var(--primary-400);border-radius:var(--radius-xl);padding:var(--space-4);position:relative;">
+            <div style="position:absolute;top:-10px;left:16px;background:var(--primary-500);color:white;padding:2px 10px;border-radius:var(--radius-full);font-size:11px;font-weight:600;">求购中</div>
+            <div style="display:flex;gap:var(--space-4);align-items:center;">
+              <div style="width:80px;height:80px;background:linear-gradient(135deg,#0f3460,#16213e);border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;">
+                <span style="font-size:32px;">🛡️</span>
+              </div>
+              <div style="flex:1;">
+                <h4 style="font-weight:600;margin-bottom:var(--space-1);">泰坦防弹装甲</h4>
+                <div style="font-size:var(--text-sm);color:var(--text-secondary);margin-bottom:var(--space-2);">
+                  磨损要求：<span style="color:#84cc16;font-weight:600;">略有磨损 (MW) 以上</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <div>
+                    <span style="color:var(--text-tertiary);font-size:var(--text-xs);">愿出价</span>
+                    <span style="color:var(--accent-500);font-size:var(--text-xl);font-weight:700;margin-left:var(--space-1);">¥350</span>
+                  </div>
+                  <button class="btn btn-secondary btn-sm">响应求购</button>
+                </div>
+              </div>
+            </div>
+            <div style="margin-top:var(--space-3);padding-top:var(--space-3);border-top:1px solid var(--border-primary);display:flex;justify-content:space-between;font-size:var(--text-xs);color:var(--text-tertiary);">
+              <span>买家：装备大师</span>
+              <span>发布于 5小时前</span>
+            </div>
+          </div>
+          
+          <!-- 求购卡片3 -->
+          <div class="wtb-card" style="background:var(--bg-card);border:2px solid var(--primary-400);border-radius:var(--radius-xl);padding:var(--space-4);position:relative;">
+            <div style="position:absolute;top:-10px;left:16px;background:var(--primary-500);color:white;padding:2px 10px;border-radius:var(--radius-full);font-size:11px;font-weight:600;">求购中</div>
+            <div style="display:flex;gap:var(--space-4);align-items:center;">
+              <div style="width:80px;height:80px;background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;">
+                <span style="font-size:32px;">🎯</span>
+              </div>
+              <div style="flex:1;">
+                <h4 style="font-weight:600;margin-bottom:var(--space-1);">AWM 狙击步枪</h4>
+                <div style="font-size:var(--text-sm);color:var(--text-secondary);margin-bottom:var(--space-2);">
+                  磨损要求：<span style="color:var(--text-secondary);font-weight:600;">不限</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <div>
+                    <span style="color:var(--text-tertiary);font-size:var(--text-xs);">愿出价</span>
+                    <span style="color:var(--accent-500);font-size:var(--text-xl);font-weight:700;margin-left:var(--space-1);">¥500</span>
+                  </div>
+                  <button class="btn btn-secondary btn-sm">响应求购</button>
+                </div>
+              </div>
+            </div>
+            <div style="margin-top:var(--space-3);padding-top:var(--space-3);border-top:1px solid var(--border-primary);display:flex;justify-content:space-between;font-size:var(--text-xs);color:var(--text-tertiary);">
+              <span>买家：狙神俱乐部</span>
+              <span>发布于 1天前</span>
+            </div>
+          </div>
+        </div>
+        
         <!-- 分页 -->
         <div class="pagination mt-8" id="pagination">
           <button class="pagination-item" id="prevPage" onclick="changePage(-1)">‹</button>
@@ -1055,9 +1149,28 @@
       // 更新结果统计文字
       const resultsText = document.querySelector('.results-count');
       if (mode === 'rent') {
-        resultsText.innerHTML = resultsText.innerHTML.replace('件道具', '件可租赁');
+        resultsText.innerHTML = resultsText.innerHTML.replace('件道具', '件可租赁').replace('条求购', '件可租赁');
+      } else if (mode === 'wtb') {
+        resultsText.innerHTML = '<strong>3</strong> 条求购需求';
       } else {
-        resultsText.innerHTML = resultsText.innerHTML.replace('件可租赁', '件道具');
+        resultsText.innerHTML = resultsText.innerHTML.replace('件可租赁', '件道具').replace('条求购需求', '件道具');
+      }
+      
+      // 切换显示的列表
+      const itemsGrid = document.getElementById('itemsGrid');
+      const wtbGrid = document.getElementById('wtbGrid');
+      const pagination = document.getElementById('pagination');
+      
+      if (mode === 'wtb') {
+        itemsGrid.style.display = 'none';
+        wtbGrid.style.display = 'grid';
+        wtbGrid.style.gridTemplateColumns = '1fr';
+        wtbGrid.style.gap = 'var(--space-4)';
+        pagination.style.display = 'none';
+      } else {
+        itemsGrid.style.display = 'grid';
+        wtbGrid.style.display = 'none';
+        pagination.style.display = 'flex';
       }
     }
     
