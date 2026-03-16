@@ -1117,61 +1117,78 @@
         }
       });
       
-      // 更新价格显示
-      document.querySelectorAll('.item-card').forEach(card => {
-        const priceEl = card.querySelector('.item-card-current');
-        const originalPrice = parseFloat(card.dataset.price);
-        
-        if (mode === 'rent') {
-          // 租金 = 市场价 × 0.001（每天约0.1%）
-          const dailyRent = (originalPrice * 0.001).toFixed(2);
-          priceEl.innerHTML = `¥${dailyRent}<span style="font-size:12px;color:var(--success-500);">/天起</span>`;
-          
-          // 添加租赁标签
-          let rentBadge = card.querySelector('.rent-badge');
-          if (!rentBadge) {
-            rentBadge = document.createElement('span');
-            rentBadge.className = 'rent-badge';
-            rentBadge.style.cssText = 'position:absolute;top:8px;right:8px;background:var(--success-500);color:white;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;';
-            rentBadge.textContent = '可租';
-            card.querySelector('.item-card-image').appendChild(rentBadge);
-          }
-          rentBadge.style.display = 'block';
-        } else {
-          // 恢复购买价格
-          priceEl.innerHTML = `¥${originalPrice}`;
-          
-          // 隐藏租赁标签
-          const rentBadge = card.querySelector('.rent-badge');
-          if (rentBadge) rentBadge.style.display = 'none';
-        }
-      });
-      
-      // 更新结果统计文字
-      const resultsText = document.querySelector('.results-count');
-      if (mode === 'rent') {
-        resultsText.innerHTML = resultsText.innerHTML.replace('件道具', '件可租赁').replace('条求购', '件可租赁');
-      } else if (mode === 'wtb') {
-        resultsText.innerHTML = '<strong>3</strong> 条求购需求';
-      } else {
-        resultsText.innerHTML = resultsText.innerHTML.replace('件可租赁', '件道具').replace('条求购需求', '件道具');
-      }
-      
       // 切换显示的列表
       const itemsGrid = document.getElementById('itemsGrid');
       const wtbGrid = document.getElementById('wtbGrid');
       const pagination = document.getElementById('pagination');
+      const resultsText = document.querySelector('.results-count');
+      const allCards = Array.from(itemsGrid.querySelectorAll('.item-card'));
       
       if (mode === 'wtb') {
+        // 求购模式：显示求购列表
         itemsGrid.style.display = 'none';
         wtbGrid.style.display = 'grid';
         wtbGrid.style.gridTemplateColumns = '1fr';
         wtbGrid.style.gap = 'var(--space-4)';
         pagination.style.display = 'none';
-      } else {
+        resultsText.innerHTML = '<strong>3</strong> 条求购需求';
+      } else if (mode === 'rent') {
+        // 租赁模式：只显示价格>200的高价商品（可租赁）
         itemsGrid.style.display = 'grid';
         wtbGrid.style.display = 'none';
         pagination.style.display = 'flex';
+        
+        let rentCount = 0;
+        allCards.forEach(card => {
+          const originalPrice = parseFloat(card.dataset.price);
+          const priceEl = card.querySelector('.item-card-current');
+          
+          // 只有价格>200的商品支持租赁
+          if (originalPrice >= 200) {
+            card.style.display = 'block';
+            rentCount++;
+            
+            // 计算日租金
+            const dailyRent = (originalPrice * 0.001).toFixed(2);
+            priceEl.innerHTML = `¥${dailyRent}<span style="font-size:12px;color:var(--success-500);">/天起</span>`;
+            
+            // 添加租赁标签
+            let rentBadge = card.querySelector('.rent-badge');
+            if (!rentBadge) {
+              rentBadge = document.createElement('span');
+              rentBadge.className = 'rent-badge';
+              rentBadge.style.cssText = 'position:absolute;top:8px;right:8px;background:var(--success-500);color:white;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;';
+              rentBadge.textContent = '可租';
+              card.querySelector('.item-card-image').style.position = 'relative';
+              card.querySelector('.item-card-image').appendChild(rentBadge);
+            }
+            rentBadge.style.display = 'block';
+            
+            // 修改卡片边框为绿色
+            card.style.borderColor = 'var(--success-500)';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+        resultsText.innerHTML = `<strong>${rentCount}</strong> 件可租赁`;
+      } else {
+        // 购买模式：显示全部商品
+        itemsGrid.style.display = 'grid';
+        wtbGrid.style.display = 'none';
+        pagination.style.display = 'flex';
+        
+        allCards.forEach(card => {
+          card.style.display = 'block';
+          card.style.borderColor = 'var(--border-primary)';
+          const priceEl = card.querySelector('.item-card-current');
+          const originalPrice = parseFloat(card.dataset.price);
+          priceEl.innerHTML = `¥${originalPrice}`;
+          
+          // 隐藏租赁标签
+          const rentBadge = card.querySelector('.rent-badge');
+          if (rentBadge) rentBadge.style.display = 'none';
+        });
+        resultsText.innerHTML = `<strong>${allCards.length}</strong> 件道具`;
       }
     }
     
