@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="暗夜猎手 AK-47 - Delta Trade 三角洲行动道具详情">
+  <title>暗夜猎手 AK-47 - Delta Trade</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/components.css">
+  
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('delta-trade-theme');
+      if (savedTheme && savedTheme !== 'system') {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      }
+    })();
+  </script>
+  
+  <style>
+    .breadcrumb {
+      padding: var(--space-4) 0;
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+    }
+    
+    .breadcrumb a {
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+    
+    .breadcrumb a:hover {
+      color: var(--primary-500);
+    }
+    
+    .breadcrumb span {
+      margin: 0 var(--space-2);
+    }
+    
+    .detail-layout {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: var(--space-8);
+      padding-bottom: var(--space-12);
+    }
+    
+    @media (max-width: 1024px) {
+      .detail-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .image-gallery {
+      position: sticky;
+      top: calc(var(--navbar-height) + var(--space-4));
+    }
+    
+    .main-image {
+      width: 100%;
+      aspect-ratio: 16/10;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      border-radius: var(--radius-xl);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: var(--space-4);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .main-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: var(--space-4);
+    }
+    
+    .main-image::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 30% 30%, rgba(139, 92, 246, 0.2) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    
+    .image-badge {
+      position: absolute;
+      top: var(--space-4);
+      left: var(--space-4);
+      padding: var(--space-2) var(--space-4);
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: white;
+      font-size: var(--text-sm);
+      font-weight: 600;
+      border-radius: var(--radius-full);
+    }
+    
+    .thumbnails {
+      display: flex;
+      gap: var(--space-3);
+    }
+    
+    .thumbnail {
+      width: 80px;
+      height: 60px;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all var(--transition-fast);
+    }
+    
+    .thumbnail:hover,
+    .thumbnail.active {
+      border-color: var(--primary-500);
+    }
+    
+    .item-info {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+    }
+    
+    .item-category {
+      font-size: var(--text-xs);
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: var(--space-2);
+    }
+    
+    .item-title {
+      font-size: var(--text-2xl);
+      font-weight: 700;
+      margin-bottom: var(--space-4);
+    }
+    
+    .item-price-section {
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-3);
+      margin-bottom: var(--space-6);
+      padding-bottom: var(--space-6);
+      border-bottom: 1px solid var(--border-primary);
+    }
+    
+    .item-price-current {
+      font-size: var(--text-4xl);
+      font-weight: 800;
+      color: var(--accent-500);
+    }
+    
+    .item-price-old {
+      font-size: var(--text-lg);
+      color: var(--text-tertiary);
+      text-decoration: line-through;
+    }
+    
+    .item-discount {
+      padding: var(--space-1) var(--space-2);
+      background-color: var(--danger-500);
+      color: white;
+      font-size: var(--text-xs);
+      font-weight: 600;
+      border-radius: var(--radius-md);
+    }
+    
+    .seller-info {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-4);
+      background-color: var(--bg-secondary);
+      border-radius: var(--radius-lg);
+      margin-bottom: var(--space-6);
+    }
+    
+    .seller-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #8b5cf6, #6366f1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+    
+    .seller-details {
+      flex: 1;
+    }
+    
+    .seller-name {
+      font-weight: 600;
+      margin-bottom: var(--space-1);
+    }
+    
+    .seller-stats {
+      font-size: var(--text-xs);
+      color: var(--text-tertiary);
+    }
+    
+    .seller-rating {
+      color: #f59e0b;
+    }
+    
+    .action-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      margin-bottom: var(--space-6);
+    }
+    
+    .btn-buy {
+      width: 100%;
+      padding: var(--space-4);
+      font-size: var(--text-lg);
+    }
+    
+    .item-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-4);
+      padding: var(--space-4);
+      background-color: var(--bg-secondary);
+      border-radius: var(--radius-lg);
+      margin-bottom: var(--space-6);
+    }
+    
+    .meta-item {
+      text-align: center;
+    }
+    
+    .meta-value {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    
+    .meta-label {
+      font-size: var(--text-xs);
+      color: var(--text-tertiary);
+      margin-top: var(--space-1);
+    }
+    
+    .item-description {
+      margin-top: var(--space-6);
+      padding-top: var(--space-6);
+      border-top: 1px solid var(--border-primary);
+    }
+    
+    .description-title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      margin-bottom: var(--space-4);
+    }
+    
+    .description-content {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+    
+    .safety-tips {
+      margin-top: var(--space-6);
+      padding: var(--space-4);
+      background-color: rgba(34, 197, 94, 0.1);
+      border: 1px solid var(--success-500);
+      border-radius: var(--radius-lg);
+    }
+    
+    .safety-tips-title {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-weight: 600;
+      color: var(--success-500);
+      margin-bottom: var(--space-2);
+    }
+    
+    .safety-tips-content {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+    }
+    
+    /* 相关推荐 */
+    .related-section {
+      margin-top: var(--space-12);
+      padding-top: var(--space-12);
+      border-top: 1px solid var(--border-primary);
+    }
+    
+    .related-title {
+      font-size: var(--text-xl);
+      font-weight: 600;
+      margin-bottom: var(--space-6);
+    }
+    
+    .related-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-6);
+    }
+    
+    @media (max-width: 1024px) {
+      .related-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .related-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a href="index.html" class="navbar-brand">
+        <img src="https://buff.163.com/static/images/site/logo.png" alt="BUFF" style="height:28px;" class="logo-dark">
+        <img src="images/buff-logo-dark.png" alt="BUFF" style="height:28px;" class="logo-light">
+        <span>三角洲交易</span>
+      </a>
+      
+      <ul class="navbar-nav hide-mobile">
+        <li><a href="index.html" class="navbar-link">首页</a></li>
+        <li><a href="marketplace.html" class="navbar-link active">道具市场</a></li>
+        <li><a href="tools/weapons.html" class="navbar-link">武器数据库</a></li>
+        <li><a href="tools/guides.html" class="navbar-link">攻略中心</a></li>
+      </ul>
+      
+      <div class="navbar-actions">
+        <div class="theme-toggle hide-mobile" role="radiogroup" aria-label="主题选择">
+          <button class="theme-toggle-option" data-theme="light" role="radio">☀️</button>
+          <button class="theme-toggle-option active" data-theme="dark" role="radio">🌙</button>
+        </div>
+        <a href="auth/login.html" class="btn btn-secondary btn-sm hide-mobile">登录</a>
+        <a href="auth/register.html" class="btn btn-primary btn-sm">免费注册</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- 面包屑导航 -->
+    <div class="breadcrumb">
+      <a href="index.html">首页</a>
+      <span>/</span>
+      <a href="marketplace.html">道具市场</a>
+      <span>/</span>
+      <a href="marketplace.html?category=武器皮肤">武器皮肤</a>
+      <span>/</span>
+      <span style="color: var(--text-primary);">暗夜猎手 AK-47</span>
+    </div>
+    
+    <!-- 详情布局 -->
+    <div class="detail-layout">
+      <!-- 图片区域 -->
+      <div class="image-gallery">
+        <div class="main-image">
+          <span class="image-badge" id="itemRarity">传说</span>
+          <img id="mainItemImage" src="picture/AK-12突擊步槍.png" alt="道具图片">
+        </div>
+      </div>
+      
+      <!-- 信息区域 -->
+      <div class="item-info">
+        <div class="item-category" id="itemCategory">武器皮肤 · 步枪</div>
+        <h1 class="item-title" id="itemTitle">AK-12 暗夜猎手</h1>
+        
+        <div class="item-price-section">
+          <span class="item-price-current" id="itemPrice">¥299</span>
+          <span class="item-price-old" id="itemOldPrice">¥399</span>
+          <span class="item-discount" id="itemDiscount">-25%</span>
+        </div>
+        
+        <!-- 卖家信息 -->
+        <div class="seller-info">
+          <div class="seller-avatar">👤</div>
+          <div class="seller-details">
+            <div class="seller-name">ProGamer_小明</div>
+            <div class="seller-stats">
+              <span class="seller-rating">⭐ 4.9</span>
+              <span> · 已完成 127 笔交易 · 注册 186 天</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 操作按钮 -->
+        <div class="action-buttons">
+          <button class="btn btn-primary btn-buy" onclick="handleBuy()">
+            🛒 立即购买
+          </button>
+          <div class="flex gap-3">
+            <button class="btn btn-secondary flex-1">
+              💬 联系卖家
+            </button>
+            <button class="btn btn-outline flex-1">
+              ❤️ 收藏
+            </button>
+          </div>
+        </div>
+        
+        <!-- 道具信息 -->
+        <div class="item-meta">
+          <div class="meta-item">
+            <div class="meta-value" id="metaRarity">传说</div>
+            <div class="meta-label">稀有度</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-value">可交易</div>
+            <div class="meta-label">状态</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-value">3天前</div>
+            <div class="meta-label">上架时间</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-value">28次</div>
+            <div class="meta-label">浏览次数</div>
+          </div>
+        </div>
+        
+        <!-- 武器/防具数据面板 -->
+        <div class="stats-panel" id="statsPanel" style="margin-top: var(--space-6); padding: var(--space-5); background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%); border: 1px solid var(--border-primary); border-radius: var(--radius-lg);">
+          <h3 style="font-size: var(--text-base); font-weight: 600; margin-bottom: var(--space-4); display: flex; align-items: center; gap: var(--space-2);">📊 <span id="statsTitle">武器数据</span></h3>
+          <div id="statsGrid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-3);">
+            <!-- 动态填充 -->
+          </div>
+        </div>
+        
+        <!-- 道具描述 -->
+        <div class="item-description">
+          <h3 class="description-title">📝 道具描述</h3>
+          <div class="description-content" id="itemDescription">
+            <p>加载中...</p>
+          </div>
+        </div>
+        
+        <!-- 安全提示 -->
+        <div class="safety-tips">
+          <div class="safety-tips-title">
+            🔒 交易安全提示
+          </div>
+          <div class="safety-tips-content">
+            请使用平台担保交易，不要私下转账。如遇问题请联系客服处理。
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 相关推荐 -->
+    <div class="related-section">
+      <h2 class="related-title">🎯 相关推荐</h2>
+      <div class="related-grid" id="relatedGrid">
+        <!-- 动态填充 -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 页脚 -->
+  <footer class="footer mt-8">
+    <div class="container">
+      <div class="footer-bottom" style="margin-top:0;padding-top:0;border-top:none;">
+        <p>© 2024 三角洲交易. 保留所有权利。</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/theme.js"></script>
+  <script>
+    // ========== 武器数据 ==========
+    const gunsData = {
+      "M4A1突擊步槍": {"name": "M4A1突擊步槍", "type": "步槍", "desc": "M4A1突擊步槍，使用5.56x45mm口徑彈藥，火力十分可靠。", "damage": 27, "rpm": 800},
+      "AKM突擊步槍": {"name": "AKM突擊步槍", "type": "步槍", "desc": "7.62x39mm口徑經典全自動突擊步槍，擁有強大火力但需要足夠的技巧。", "damage": 40, "rpm": 600},
+      "AK-12突擊步槍": {"name": "AK-12突擊步槍", "type": "步槍", "desc": "AK12是一款由俄羅斯生產的5.45x39mm口徑突擊步槍，採用模塊化設計，具有高精度和可靠性。", "damage": 27, "rpm": 735},
+      "AWM狙擊步槍": {"name": "AWM狙擊步槍", "type": "狙擊步槍", "desc": "AWM是一款由英國生產的狙擊步槍，採用.338 Lapua Magnum彈藥，具有極高的精度和射程。", "damage": 100, "rpm": 35},
+      "M700狙擊步槍": {"name": "M700狙擊步槍", "type": "狙擊步槍", "desc": "7.62×51mm口徑狙擊利器，可輕鬆狩獵目標，穩定性與射程兼具。", "damage": 55, "rpm": 48},
+      "SCAR-H戰鬥步槍": {"name": "SCAR-H戰鬥步槍", "type": "步槍", "desc": "SCAR-H是一款由比利時生產的7.62x51mm口徑戰鬥步槍，具有高精度和可靠性。", "damage": 40, "rpm": 585},
+      "Vector衝鋒槍": {"name": "Vector衝鋒槍", "type": "衝鋒槍", "desc": ".45口徑的全自動衝鋒槍，超高射速可以在近距離表現出強大爆發力。", "damage": 32, "rpm": 1091},
+      "MP5衝鋒槍": {"name": "MP5衝鋒槍", "type": "衝鋒槍", "desc": "採用9x19mm彈藥的全自動衝鋒槍，在各項性能上都達到完美平衡。", "damage": 30, "rpm": 820},
+      "P90衝鋒槍": {"name": "P90衝鋒槍", "type": "衝鋒槍", "desc": "使用5.7x28mm子彈的全自動無托式衝鋒槍，可容納更多彈藥。", "damage": 32, "rpm": 898},
+      "SVD狙擊步槍": {"name": "SVD狙擊步槍", "type": "精確射手步槍", "desc": "SVD是一款蘇聯/俄羅斯製造的半自動狙擊步槍，具有優秀的精度和射程。", "damage": 56, "rpm": 300},
+      "沙漠之鷹": {"name": "沙漠之鷹", "type": "手槍", "desc": "大威力的半自動手槍，使用的是短彈體.50口徑的彈藥。", "damage": 50, "rpm": 207},
+      "M249輕機槍": {"name": "M249輕機槍", "type": "輕機槍", "desc": "發射5.56x45mm彈藥的火力強大機槍，為戰鬥小組提供火力壓制。", "damage": 30, "rpm": 858},
+      "K416突擊步槍": {"name": "K416突擊步槍", "type": "步槍", "desc": "K416突擊步槍是一款德國製造的突擊步槍，使用5.56x45mm子彈。", "damage": 29, "rpm": 880},
+      "PKM通用機槍": {"name": "PKM通用機槍", "type": "輕機槍", "desc": "全自動機槍，採用7.62x54mmR全威力彈藥，中等射速且具備強大壓制力。", "damage": 45, "rpm": 669},
+      "G17": {"name": "G17", "type": "手槍", "desc": "奧地利製造的半自動手槍，經典、可靠、耐用，採用9x19mm口徑設計。", "damage": 27, "rpm": 462},
+      "UZI衝鋒槍": {"name": "UZI衝鋒槍", "type": "衝鋒槍", "desc": "UZI是一款以色列製造的衝鋒槍，使用9x19mm子彈。", "damage": 28, "rpm": 780},
+      "191式突擊步槍": {"name": "191式突擊步槍", "type": "步槍", "desc": "採用新思路、新技術的新式國產突擊步槍，使用5.8×42mm口徑彈藥。", "damage": 35, "rpm": 706}
+    };
+    
+    // ========== 防具数据 ==========
+    const protectData = {
+      "泰坦防彈裝甲": {"name": "泰坦防彈裝甲", "type": "護甲", "level": 6, "desc": "GTI研發部門研發的高性能通用裝甲系列避彈衣，符合6級防彈標準。"},
+      "DICH-9重型頭盔": {"name": "DICH-9重型頭盔", "type": "頭盔", "level": 6, "desc": "三角洲小隊在戰術頭盔基礎上更換了DICH系列最新工藝的面部裝甲，符合6級防彈標準。"},
+      "GT5指揮官頭盔": {"name": "GT5指揮官頭盔", "type": "頭盔", "level": 5, "desc": "採用了更輕盈的護目能阻擋5級子彈穿透，加裝的耳機提供降噪和拾音能力。"},
+      "精英避彈衣": {"name": "精英避彈衣", "type": "護甲", "level": 5, "desc": "阿薩拉部隊為精英人員配置的最頂級裝甲，符合5級防彈標準。"},
+      "D7戰術背囊": {"name": "D7戰術背囊", "type": "背囊", "level": 6, "desc": "先進的戰術背囊，集成多種裝備掛載選項，提供35格儲存空間。"},
+      "金剛避彈衣": {"name": "金剛避彈衣", "type": "護甲", "level": 6, "desc": "阿薩拉部隊最強的護甲，符合6級防彈標準。"},
+      "H70精英頭盔": {"name": "H70精英頭盔", "type": "頭盔", "level": 6, "desc": "在防暴頭盔的基礎上迭代了材質和面部裝甲，符合6級防彈標準。"},
+      "特里克MAS2.0裝甲": {"name": "特里克MAS2.0裝甲", "type": "護甲", "level": 6, "desc": "三角洲小隊研發的特里克戰術模塊化護甲系統，符合6級防彈標準。"},
+      "GTO重型戰術包": {"name": "GTO重型戰術包", "type": "背囊", "level": 6, "desc": "具備極高強度和容量的戰術背囊，提供45格儲存空間。"},
+      "颶風戰術胸掛": {"name": "颶風戰術胸掛", "type": "胸掛", "level": 5, "desc": "設計為高速作戰行動使用，提供22格快速使用空間。"},
+      "ALS揹負系統": {"name": "ALS揹負系統", "type": "背囊", "level": 5, "desc": "全新的揹負系統，提供出色的重量分佈和舒適性，提供28格儲存空間。"},
+      "Mask-1鐵壁頭盔": {"name": "Mask-1鐵壁頭盔", "type": "頭盔", "level": 5, "desc": "在衞士頭盔基礎上更新了高級材質和面部防護，符合5級防彈標準。"},
+      "DAR突擊手胸掛": {"name": "DAR突擊手胸掛", "type": "胸掛", "level": 5, "desc": "專為突擊手設計，提供24格快速使用空間。"}
+    };
+    
+    // ========== 页面初始化 ==========
+    function initPage() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const itemId = urlParams.get('id');
+      const itemType = urlParams.get('type');
+      
+      if (!itemId) {
+        loadItemData('AK-12突擊步槍', 'guns');
+        return;
+      }
+      
+      loadItemData(itemId, itemType);
+    }
+    
+    function loadItemData(itemId, itemType) {
+      let itemData;
+      let isGun = itemType === 'guns';
+      
+      if (isGun) {
+        itemData = gunsData[itemId];
+      } else {
+        itemData = protectData[itemId];
+      }
+      
+      if (!itemData) {
+        itemData = gunsData['AK-12突擊步槍'];
+        isGun = true;
+        itemId = 'AK-12突擊步槍';
+      }
+      
+      // 更新页面标题
+      document.title = `${itemData.name} - 三角洲交易`;
+      
+      // 更新主图 (使用高清大图，无前缀)
+      const mainImage = document.getElementById('mainItemImage');
+      mainImage.src = `picture/${itemId}.png`;
+      mainImage.alt = itemData.name;
+      
+      // 更新标题和分类
+      document.getElementById('itemTitle').textContent = itemData.name;
+      document.getElementById('itemCategory').textContent = isGun ? 
+        `武器皮肤 · ${itemData.type}` : 
+        `角色外观 · ${itemData.level}级${itemData.type}`;
+      
+      // 生成随机价格
+      const price = Math.floor(Math.random() * 400) + 100;
+      const oldPrice = Math.floor(price * 1.3);
+      const discount = Math.floor((1 - price/oldPrice) * 100);
+      
+      document.getElementById('itemPrice').textContent = `¥${price}`;
+      document.getElementById('itemOldPrice').textContent = `¥${oldPrice}`;
+      document.getElementById('itemDiscount').textContent = `-${discount}%`;
+      
+      // 更新稀有度
+      const level = isGun ? (itemData.damage >= 50 ? 6 : itemData.damage >= 35 ? 5 : 4) : itemData.level;
+      const rarity = level >= 6 ? '传说' : level >= 5 ? '史诗' : level >= 4 ? '稀有' : '普通';
+      document.getElementById('itemRarity').textContent = rarity;
+      document.getElementById('metaRarity').textContent = rarity;
+      
+      // 更新稀有度徽章颜色
+      const badge = document.getElementById('itemRarity');
+      if (rarity === '传说') {
+        badge.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+      } else if (rarity === '史诗') {
+        badge.style.background = 'linear-gradient(135deg, #a855f7, #7c3aed)';
+      } else if (rarity === '稀有') {
+        badge.style.background = 'linear-gradient(135deg, #3b82f6, #2563eb)';
+      } else {
+        badge.style.background = 'linear-gradient(135deg, #78716c, #57534e)';
+      }
+      
+      // 更新数据面板
+      updateStatsPanel(itemData, isGun);
+      
+      // 更新描述
+      updateDescription(itemData);
+      
+      // 加载相关推荐
+      loadRelatedItems(itemType || 'guns', itemId);
+    }
+    
+    function updateStatsPanel(data, isGun) {
+      const statsTitle = document.getElementById('statsTitle');
+      const statsGrid = document.getElementById('statsGrid');
+      
+      if (isGun) {
+        statsTitle.textContent = '武器数据';
+        const damagePercent = Math.min(data.damage, 100);
+        const rpmPercent = Math.min(data.rpm / 12, 100);
+        
+        statsGrid.innerHTML = `
+          <div style="display:flex;justify-content:space-between;padding:var(--space-2) 0;border-bottom:1px dashed var(--border-secondary);grid-column:span 2;">
+            <span style="color:var(--text-secondary);font-size:var(--text-sm);">武器类型</span>
+            <span style="font-weight:600;color:var(--primary-400);font-size:var(--text-sm);">${data.type}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:var(--space-2) 0;border-bottom:1px dashed var(--border-secondary);">
+            <span style="color:var(--text-secondary);font-size:var(--text-sm);">伤害</span>
+            <span style="font-weight:600;color:var(--primary-400);font-size:var(--text-sm);">${data.damage}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:var(--space-2) 0;border-bottom:1px dashed var(--border-secondary);">
+            <span style="color:var(--text-secondary);font-size:var(--text-sm);">射速 (RPM)</span>
+            <span style="font-weight:600;color:var(--primary-400);font-size:var(--text-sm);">${data.rpm}</span>
+          </div>
+          <div style="grid-column:span 2;margin-top:var(--space-2);">
+            <div style="display:flex;justify-content:space-between;font-size:var(--text-xs);color:var(--text-tertiary);margin-bottom:var(--space-1);">
+              <span>伤害指数</span><span>${damagePercent}%</span>
+            </div>
+            <div style="height:6px;background:var(--bg-tertiary);border-radius:var(--radius-full);overflow:hidden;">
+              <div style="height:100%;width:${damagePercent}%;background:linear-gradient(90deg,var(--primary-500),var(--accent-500));border-radius:var(--radius-full);"></div>
+            </div>
+          </div>
+          <div style="grid-column:span 2;">
+            <div style="display:flex;justify-content:space-between;font-size:var(--text-xs);color:var(--text-tertiary);margin-bottom:var(--space-1);">
+              <span>射速指数</span><span>${Math.floor(rpmPercent)}%</span>
+            </div>
+            <div style="height:6px;background:var(--bg-tertiary);border-radius:var(--radius-full);overflow:hidden;">
+              <div style="height:100%;width:${rpmPercent}%;background:linear-gradient(90deg,#22c55e,#16a34a);border-radius:var(--radius-full);"></div>
+            </div>
+          </div>
+        `;
+      } else {
+        statsTitle.textContent = '防护数据';
+        const levelPercent = (data.level / 6) * 100;
+        
+        statsGrid.innerHTML = `
+          <div style="display:flex;justify-content:space-between;padding:var(--space-2) 0;border-bottom:1px dashed var(--border-secondary);grid-column:span 2;">
+            <span style="color:var(--text-secondary);font-size:var(--text-sm);">装备类型</span>
+            <span style="font-weight:600;color:var(--primary-400);font-size:var(--text-sm);">${data.type}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:var(--space-2) 0;border-bottom:1px dashed var(--border-secondary);grid-column:span 2;">
+            <span style="color:var(--text-secondary);font-size:var(--text-sm);">防弹等级</span>
+            <span style="font-weight:600;color:var(--primary-400);font-size:var(--text-sm);">${data.level} 级</span>
+          </div>
+          <div style="grid-column:span 2;margin-top:var(--space-2);">
+            <div style="display:flex;justify-content:space-between;font-size:var(--text-xs);color:var(--text-tertiary);margin-bottom:var(--space-1);">
+              <span>防护能力</span><span>${Math.floor(levelPercent)}%</span>
+            </div>
+            <div style="height:6px;background:var(--bg-tertiary);border-radius:var(--radius-full);overflow:hidden;">
+              <div style="height:100%;width:${levelPercent}%;background:linear-gradient(90deg,#3b82f6,#1d4ed8);border-radius:var(--radius-full);"></div>
+            </div>
+          </div>
+        `;
+      }
+    }
+    
+    function updateDescription(data) {
+      const descContent = document.getElementById('itemDescription');
+      descContent.innerHTML = `
+        <p><strong>【官方描述】</strong></p>
+        <p style="margin-top:var(--space-2);">${data.desc}</p>
+        <p style="margin-top:var(--space-4);"><strong>【卖家说明】</strong></p>
+        <p style="margin-top:var(--space-2);">此物品为正版游戏内道具，购买后通过官方交易系统转移。物品成色完美，无任何使用痕迹。因个人原因低价出售，价格可小刀。</p>
+      `;
+    }
+    
+    function loadRelatedItems(currentType, currentId) {
+      const relatedGrid = document.getElementById('relatedGrid');
+      const items = currentType === 'guns' ? Object.keys(gunsData) : Object.keys(protectData);
+      
+      const filteredItems = items.filter(id => id !== currentId);
+      const randomItems = filteredItems.sort(() => 0.5 - Math.random()).slice(0, 4);
+      
+      relatedGrid.innerHTML = randomItems.map(itemId => {
+        const data = currentType === 'guns' ? gunsData[itemId] : protectData[itemId];
+        const price = Math.floor(Math.random() * 300) + 80;
+        const level = currentType === 'guns' ? 
+          (data.damage >= 50 ? 6 : data.damage >= 35 ? 5 : 4) : 
+          data.level;
+        const rarity = level >= 6 ? '传说' : level >= 5 ? '史诗' : level >= 4 ? '稀有' : '普通';
+        const badgeClass = rarity === '传说' ? 'badge-legendary' : 
+                          rarity === '史诗' ? 'badge-epic' : 
+                          rarity === '稀有' ? 'badge-rare' : 'badge-common';
+        
+        return `
+          <a href="item-detail.html?id=${encodeURIComponent(itemId)}&type=${currentType}" class="item-card">
+            <div class="item-card-image">
+              <img src="picture/${currentType}_${itemId}.png" alt="${data.name}" 
+                   style="width:100%;height:100%;object-fit:contain;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);">
+              <span class="item-card-badge ${badgeClass}">${rarity}</span>
+            </div>
+            <div class="item-card-content">
+              <div class="item-card-category">${currentType === 'guns' ? '武器皮肤' : '角色外观'}</div>
+              <h3 class="item-card-title">${data.name}</h3>
+              <div class="item-card-price">
+                <span class="item-card-price-current">¥${price}</span>
+              </div>
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+    
+    function handleBuy() {
+      alert('请先登录后再进行购买操作！');
+      window.location.href = 'auth/login.html';
+    }
+    
+    // 页面加载完成后初始化
+    document.addEventListener('DOMContentLoaded', initPage);
+  </script>
+</body>
+</html>
+            <div class="item-card-category">武器皮肤</div>
+            <h3 class="item-card-title">金龙至尊 AWM</h3>
+            <div class="item-card-price">
+              <span class="item-card-price-current">¥388</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="item-card">
+          <div class="item-card-image">
+            <div style="width:100%;height:100%;background:linear-gradient(135deg,#0f3460 0%,#16213e 100%);display:flex;align-items:center;justify-content:center;color:#22c55e;font-size:3rem;">🔫</div>
+            <span class="item-card-badge badge-rare">稀有</span>
+          </div>
+          <div class="item-card-content">
+            <div class="item-card-category">武器皮肤</div>
+            <h3 class="item-card-title">丛林猎人 SCAR</h3>
+            <div class="item-card-price">
+              <span class="item-card-price-current">¥128</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 页脚 -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom" style="margin-top:0;padding-top:0;border-top:none;">
+        <p>© 2024 Delta Trade. 保留所有权利。</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/theme.js"></script>
+  <script>
+    // 缩略图点击
+    document.querySelectorAll('.thumbnail').forEach(thumb => {
+      thumb.addEventListener('click', function() {
+        document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+    
+    // 购买处理
+    function handleBuy() {
+      alert('🛒 请先登录后再购买\n\n即将跳转到登录页面...');
+      window.location.href = 'auth/login.html';
+    }
+  </script>
+</body>
+</html>

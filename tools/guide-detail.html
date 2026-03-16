@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="三角洲行动攻略详情 - Delta Trade">
+  <title>攻略详情 - Delta Trade</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../css/design-system.css">
+  <link rel="stylesheet" href="../css/components.css">
+  
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('delta-trade-theme');
+      if (savedTheme && savedTheme !== 'system') {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      }
+    })();
+  </script>
+  
+  <style>
+    .article-header {
+      background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+      padding: var(--space-12) 0;
+      border-bottom: 1px solid var(--border-primary);
+    }
+    
+    .article-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      margin-bottom: var(--space-4);
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+    }
+    
+    .article-tag {
+      padding: var(--space-1) var(--space-3);
+      background-color: var(--primary-500);
+      color: white;
+      border-radius: var(--radius-full);
+      font-size: var(--text-xs);
+      font-weight: 500;
+    }
+    
+    .article-title {
+      font-size: var(--text-3xl);
+      font-weight: 700;
+      margin-bottom: var(--space-4);
+      line-height: 1.3;
+    }
+    
+    .article-info {
+      display: flex;
+      align-items: center;
+      gap: var(--space-6);
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+    }
+    
+    .article-info-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    
+    .article-content {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: var(--space-10) var(--space-6);
+    }
+    
+    .article-body {
+      font-size: var(--text-base);
+      line-height: 1.9;
+      color: var(--text-primary);
+    }
+    
+    .article-body p {
+      margin-bottom: var(--space-5);
+    }
+    
+    .article-body h2 {
+      font-size: var(--text-xl);
+      font-weight: 600;
+      margin-top: var(--space-8);
+      margin-bottom: var(--space-4);
+      padding-bottom: var(--space-2);
+      border-bottom: 2px solid var(--primary-500);
+    }
+    
+    .article-body h3 {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      margin-top: var(--space-6);
+      margin-bottom: var(--space-3);
+    }
+    
+    .article-body ul, .article-body ol {
+      margin-bottom: var(--space-5);
+      padding-left: var(--space-6);
+    }
+    
+    .article-body li {
+      margin-bottom: var(--space-2);
+    }
+    
+    .article-body blockquote {
+      margin: var(--space-6) 0;
+      padding: var(--space-4) var(--space-6);
+      background-color: var(--bg-secondary);
+      border-left: 4px solid var(--primary-500);
+      border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+    }
+    
+    .article-body .tip {
+      margin: var(--space-6) 0;
+      padding: var(--space-4) var(--space-5);
+      background-color: rgba(34, 197, 94, 0.1);
+      border: 1px solid var(--success-500);
+      border-radius: var(--radius-lg);
+    }
+    
+    .article-body .tip-title {
+      font-weight: 600;
+      color: var(--success-500);
+      margin-bottom: var(--space-2);
+    }
+    
+    .article-body .warning {
+      margin: var(--space-6) 0;
+      padding: var(--space-4) var(--space-5);
+      background-color: rgba(245, 158, 11, 0.1);
+      border: 1px solid #f59e0b;
+      border-radius: var(--radius-lg);
+    }
+    
+    .article-body .warning-title {
+      font-weight: 600;
+      color: #f59e0b;
+      margin-bottom: var(--space-2);
+    }
+    
+    .article-footer {
+      margin-top: var(--space-10);
+      padding-top: var(--space-6);
+      border-top: 1px solid var(--border-primary);
+    }
+    
+    .article-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      margin-bottom: var(--space-6);
+    }
+    
+    .article-tags span {
+      padding: var(--space-1) var(--space-3);
+      background-color: var(--bg-secondary);
+      color: var(--text-secondary);
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+    }
+    
+    .article-nav {
+      display: flex;
+      justify-content: space-between;
+      gap: var(--space-4);
+    }
+    
+    .article-nav a {
+      flex: 1;
+      padding: var(--space-4);
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-lg);
+      text-decoration: none;
+      transition: all var(--transition-fast);
+    }
+    
+    .article-nav a:hover {
+      border-color: var(--primary-500);
+      background-color: var(--bg-hover);
+    }
+    
+    .article-nav-label {
+      font-size: var(--text-xs);
+      color: var(--text-tertiary);
+      margin-bottom: var(--space-1);
+    }
+    
+    .article-nav-title {
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    
+    .related-guides {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 var(--space-6) var(--space-12);
+    }
+    
+    .related-title {
+      font-size: var(--text-xl);
+      font-weight: 600;
+      margin-bottom: var(--space-6);
+    }
+    
+    .related-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-4);
+    }
+    
+    @media (max-width: 640px) {
+      .related-list {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .related-item {
+      display: flex;
+      gap: var(--space-3);
+      padding: var(--space-3);
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-lg);
+      text-decoration: none;
+      transition: all var(--transition-fast);
+    }
+    
+    .related-item:hover {
+      border-color: var(--primary-500);
+      transform: translateX(4px);
+    }
+    
+    .related-item-image {
+      width: 80px;
+      height: 60px;
+      background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+    
+    .related-item-title {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-primary);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a href="../index.html" class="navbar-brand">
+        <div class="navbar-logo">Δ</div>
+        <span>Delta Trade</span>
+      </a>
+      
+      <ul class="navbar-nav hide-mobile">
+        <li><a href="../index.html" class="navbar-link">首页</a></li>
+        <li><a href="../marketplace.html" class="navbar-link">道具市场</a></li>
+        <li><a href="weapons.html" class="navbar-link">武器数据库</a></li>
+        <li><a href="guides.html" class="navbar-link active">攻略中心</a></li>
+      </ul>
+      
+      <div class="navbar-actions">
+        <div class="theme-toggle hide-mobile" role="radiogroup" aria-label="主题选择">
+          <button class="theme-toggle-option" data-theme="light" role="radio">☀️</button>
+          <button class="theme-toggle-option" data-theme="dark" role="radio">🌙</button>
+          <button class="theme-toggle-option active" data-theme="system" role="radio">💻</button>
+        </div>
+        <a href="../auth/login.html" class="btn btn-secondary btn-sm hide-mobile">登录</a>
+        <a href="../auth/register.html" class="btn btn-primary btn-sm">免费注册</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 文章头部 -->
+  <section class="article-header">
+    <div class="container">
+      <div class="article-meta">
+        <span class="article-tag">攻略</span>
+        <span>S8赛季</span>
+        <span>•</span>
+        <span>武器改装</span>
+      </div>
+      <h1 class="article-title" id="articleTitle">S8赛季武器改装方案分享</h1>
+      <div class="article-info">
+        <div class="article-info-item">
+          <span>📅</span>
+          <span id="articleDate">2024-03-15</span>
+        </div>
+        <div class="article-info-item">
+          <span>👁️</span>
+          <span>12,345 阅读</span>
+        </div>
+        <div class="article-info-item">
+          <span>💬</span>
+          <span>56 评论</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 文章内容 -->
+  <article class="article-content">
+    <div class="article-body" id="articleBody">
+      <p>三角洲行动S8赛季对很多的枪械进行了调整，同时也新增了很多的枪械配件，这就导致S7赛季部分的改枪需要重新进行调整，很多的玩家新赛季也不知道用什么枪猛攻合适，今天我们就来看看这个S8赛季的改枪码推荐吧。</p>
+
+      <h2>一、改装核心思路</h2>
+      <p>在进行武器改装时，需要根据你的游戏风格和常用战斗距离来选择合适的配件。一般来说，我们需要在以下几个方面做出权衡：</p>
+      <ul>
+        <li><strong>后坐力控制</strong>：对于全自动武器来说，后坐力控制是最重要的因素之一</li>
+        <li><strong>精准度</strong>：影响你的首发命中率和连续射击的稳定性</li>
+        <li><strong>移动速度</strong>：决定你在战斗中的机动性</li>
+        <li><strong>瞄准速度</strong>：影响你遭遇敌人时的反应速度</li>
+      </ul>
+
+      <h2>二、T0级武器改装推荐</h2>
+      
+      <h3>1. AS Val 突击步枪</h3>
+      <p>AS Val在S8赛季并没有太多的调整，依旧是占据了三角洲行动枪械排行榜的T0级别。对比其他同级别的武器，这个武器的满改也就60W左右，但是射速太快，所以子弹方面可能会不够用。</p>
+      
+      <div class="tip">
+        <div class="tip-title">💡 小贴士</div>
+        <p>AS Val的消音效果非常好，适合侧翼突袭和隐蔽作战。但要注意弹匣容量有限，建议携带足够的备用弹匣。</p>
+      </div>
+
+      <h3>2. M7 战斗步枪</h3>
+      <p>M7这把武器在S8赛季中的强度稍微进行了降低，降低了基础操控速度以及腰射精度，但是提高了提风枪管的操控速度，总的来说M7对于满改方面并没有太多的变动。</p>
+
+      <h3>3. MK47 突击步枪</h3>
+      <p>MK47这把枪这个赛季强度很高，算是新晋升的S+级别武器。新的子弹和配件可以让玩家更好的控制后坐力和输出能力，目前来看这个赛季这把武器的登场率明显提高，搭配余烬枪管杀伤力和输出距离都很不错。</p>
+
+      <h2>三、改装配件选择建议</h2>
+      
+      <div class="warning">
+        <div class="warning-title">⚠️ 注意</div>
+        <p>改装方案仅供参考，实际效果可能因个人操作习惯和游戏场景而异。建议在靶场多试验找到最适合自己的配置。</p>
+      </div>
+
+      <p>在选择配件时，优先考虑以下几点：</p>
+      <ol>
+        <li>枪管：优先选择能提升伤害距离和后坐力控制的枪管</li>
+        <li>握把：根据需要选择垂直握把或倾斜握把</li>
+        <li>枪托：影响后坐力和瞄准稳定性</li>
+        <li>瞄准镜：根据常用交战距离选择合适倍率</li>
+        <li>弹匣：容量与换弹速度的平衡</li>
+      </ol>
+
+      <h2>四、总结</h2>
+      <p>S8赛季的武器平衡做得相对不错，大部分武器都有可玩性。建议玩家根据自己的游戏风格选择合适的武器，不必盲目追求版本答案。多在靶场练习，找到最适合自己的武器和配件组合才是最重要的。</p>
+
+      <blockquote>
+        "在三角洲行动中，没有最强的武器，只有最适合你的武器。" —— 资深玩家建议
+      </blockquote>
+    </div>
+
+    <div class="article-footer">
+      <div class="article-tags">
+        <span>#S8赛季</span>
+        <span>#武器改装</span>
+        <span>#攻略</span>
+        <span>#AS Val</span>
+        <span>#M7</span>
+        <span>#MK47</span>
+      </div>
+      
+      <div class="article-nav">
+        <a href="guides.html">
+          <div class="article-nav-label">← 返回</div>
+          <div class="article-nav-title">攻略中心</div>
+        </a>
+        <a href="guide-detail.html">
+          <div class="article-nav-label">下一篇 →</div>
+          <div class="article-nav-title">哈夫克回收平台活动攻略</div>
+        </a>
+      </div>
+    </div>
+  </article>
+
+  <!-- 相关攻略 -->
+  <section class="related-guides">
+    <h2 class="related-title">📚 相关攻略</h2>
+    <div class="related-list">
+      <a href="guide-detail.html" class="related-item">
+        <div class="related-item-image">🔫</div>
+        <div class="related-item-title">S8赛季AWM改装方案分享</div>
+      </a>
+      <a href="guide-detail.html" class="related-item">
+        <div class="related-item-image">🎯</div>
+        <div class="related-item-title">S8赛季MP7改装方案分享</div>
+      </a>
+      <a href="guide-detail.html" class="related-item">
+        <div class="related-item-image">🛡️</div>
+        <div class="related-item-title">组队实战攻略</div>
+      </a>
+      <a href="guide-detail.html" class="related-item">
+        <div class="related-item-image">⚔️</div>
+        <div class="related-item-title">修脚新手速成攻略</div>
+      </a>
+    </div>
+  </section>
+
+  <!-- 页脚 -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom" style="margin-top:0;padding-top:0;border-top:none;">
+        <p>© 2024 Delta Trade. 保留所有权利。</p>
+        <p class="mt-2" style="font-size: 12px;">攻略内容仅供参考，具体数值以游戏内为准。</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/theme.js"></script>
+</body>
+</html>

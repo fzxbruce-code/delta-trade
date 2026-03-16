@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Delta Trade - 三角洲行动专业道具交易平台，安全交易游戏皮肤、武器涂装，获取最全攻略工具">
+  <meta name="keywords" content="三角洲行动,道具交易,皮肤交易,Delta Force,游戏交易平台">
+  <title>三角洲交易 - 三角洲行动道具交易平台</title>
+  
+  <!-- 预加载字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- 样式表 -->
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/components.css">
+  
+  <!-- 主题立即应用脚本 -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('delta-trade-theme');
+      if (savedTheme && savedTheme !== 'system') {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      }
+    })();
+  </script>
+  
+  <style>
+    /* 页面特定样式 */
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-12);
+      margin-top: var(--space-12);
+      flex-wrap: wrap;
+    }
+    
+    .hero-stat {
+      text-align: center;
+    }
+    
+    .hero-stat-value {
+      font-size: var(--text-3xl);
+      font-weight: 700;
+      color: var(--primary-500);
+    }
+    
+    .hero-stat-label {
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+      margin-top: var(--space-1);
+    }
+    
+    .section {
+      padding: var(--space-20) 0;
+    }
+    
+    .section-header {
+      text-align: center;
+      margin-bottom: var(--space-12);
+    }
+    
+    .section-title {
+      font-size: var(--text-3xl);
+      font-weight: 700;
+      margin-bottom: var(--space-4);
+    }
+    
+    .section-subtitle {
+      font-size: var(--text-lg);
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .items-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-6);
+    }
+    
+    @media (max-width: 1024px) {
+      .items-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .items-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .items-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-6);
+    }
+    
+    @media (max-width: 768px) {
+      .tools-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .cta-section {
+      background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-800) 100%);
+      padding: var(--space-16) 0;
+      text-align: center;
+      color: white;
+    }
+    
+    .cta-title {
+      font-size: var(--text-3xl);
+      font-weight: 700;
+      margin-bottom: var(--space-4);
+      color: white;
+    }
+    
+    .cta-subtitle {
+      font-size: var(--text-lg);
+      opacity: 0.9;
+      margin-bottom: var(--space-8);
+      color: white;
+    }
+    
+    .trust-badges {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-8);
+      flex-wrap: wrap;
+      margin-top: var(--space-8);
+    }
+    
+    .trust-badge {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+    }
+    
+    .trust-badge-icon {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--success-500);
+    }
+
+    /* 移动端菜单 */
+    .mobile-menu-btn {
+      display: none;
+      padding: var(--space-2);
+      color: var(--text-primary);
+    }
+    
+    @media (max-width: 768px) {
+      .mobile-menu-btn {
+        display: flex;
+      }
+      
+      .navbar-nav {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a href="index.html" class="navbar-brand">
+        <img src="https://buff.163.com/static/images/site/logo.png" alt="BUFF" style="height:28px;" class="logo-dark">
+        <img src="images/buff-logo-dark.png" alt="BUFF" style="height:28px;" class="logo-light">
+        <span>三角洲交易</span>
+      </a>
+      
+      <ul class="navbar-nav hide-mobile">
+        <li><a href="index.html" class="navbar-link active">首页</a></li>
+        <li><a href="marketplace.html" class="navbar-link">道具市场</a></li>
+        <li><a href="tools/weapons.html" class="navbar-link">武器数据库</a></li>
+        <li><a href="tools/guides.html" class="navbar-link">攻略中心</a></li>
+      </ul>
+      
+      <div class="navbar-actions">
+        <!-- 主题切换 -->
+        <div class="theme-toggle hide-mobile" role="radiogroup" aria-label="主题选择">
+          <button class="theme-toggle-option" data-theme="light" role="radio" aria-checked="false" title="浅色模式">
+            ☀️
+          </button>
+          <button class="theme-toggle-option active" data-theme="dark" role="radio" aria-checked="true" title="深色模式">
+            🌙
+          </button>
+        </div>
+        
+        <a href="auth/login.html" class="btn btn-secondary btn-sm hide-mobile">登录</a>
+        <a href="auth/register.html" class="btn btn-primary btn-sm">免费注册</a>
+        
+        <!-- 移动端菜单按钮 -->
+        <button class="mobile-menu-btn show-mobile" aria-label="菜单">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 12h18M3 6h18M3 18h18"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 英雄区域 -->
+  <section class="hero">
+    <div class="hero-background"></div>
+    <div class="container">
+      <div class="hero-content">
+        <h1 class="hero-title">三角洲行动<br>专业道具交易平台</h1>
+        <p class="hero-subtitle">
+          安全、便捷、低费率的游戏道具交易市场<br>
+          同时提供最全面的武器数据库和攻略工具
+        </p>
+        <div class="hero-actions">
+          <a href="marketplace.html" class="btn btn-primary btn-lg">
+            🎯 浏览市场
+          </a>
+          <a href="tools/weapons.html" class="btn btn-secondary btn-lg">
+            📊 武器数据库
+          </a>
+        </div>
+        
+        <!-- 平台数据 -->
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="hero-stat-value">10,000+</div>
+            <div class="hero-stat-label">活跃用户</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-value">50,000+</div>
+            <div class="hero-stat-label">道具在售</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-value">99.8%</div>
+            <div class="hero-stat-label">交易成功率</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-value">5%</div>
+            <div class="hero-stat-label">超低手续费</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 热门道具 -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">🔥 热门道具</h2>
+        <p class="section-subtitle">发现最受欢迎的三角洲行动皮肤和装饰品</p>
+      </div>
+      
+      <!-- 分类筛选 -->
+      <div class="filter-tabs mb-8">
+        <button class="filter-tab active">全部</button>
+        <button class="filter-tab">武器皮肤</button>
+        <button class="filter-tab">角色外观</button>
+        <button class="filter-tab">载具涂装</button>
+        <button class="filter-tab">配件</button>
+        <button class="filter-tab">限定</button>
+      </div>
+      
+      <!-- 道具网格 -->
+      <div class="items-grid" id="itemsGrid">
+        <!-- 道具卡片 1 -->
+        <a href="item-detail.html?id=M4A1突擊步槍&type=guns" class="item-card" data-category="武器皮肤">
+          <div class="item-card-image">
+            <img src="picture/guns_M4A1突擊步槍.png" alt="M4A1突擊步槍" style="width:100%;height:100%;object-fit:contain;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);">
+            <span class="item-card-badge badge-epic">史诗</span>
+          </div>
+          <div class="item-card-content">
+            <div class="item-card-category">武器皮肤 · 步枪</div>
+            <h3 class="item-card-title">M4A1 丛林迷彩</h3>
+            <div class="item-card-price">
+              <span class="item-card-price-current">¥199</span>
+              <span class="item-card-price-old">¥259</span>
+            </div>
+            <div class="item-card-seller">
+              <div class="item-card-seller-avatar" style="background:linear-gradient(135deg,#8b5cf6,#6366f1);"></div>
+              <span class="item-card-seller-name">ProGamer_小明</span>
+            </div>
+          </div>
+        </a>
+        
+        <!-- 道具卡片 2 -->
+        <a href="item-detail.html?id=金剛避彈衣&type=protect" class="item-card" data-category="角色外观">
+          <div class="item-card-image">
+            <img src="picture/protect_金剛避彈衣.png" alt="金剛避彈衣" style="width:100%;height:100%;object-fit:contain;background:linear-gradient(135deg,#0f3460 0%,#16213e 100%);">
+            <span class="item-card-badge badge-legendary">传说</span>
+          </div>
+          <div class="item-card-content">
+            <div class="item-card-category">角色外观 · 6级护甲</div>
+            <h3 class="item-card-title">金刚避弹衣</h3>
+            <div class="item-card-price">
+              <span class="item-card-price-current">¥498</span>
+            </div>
+            <div class="item-card-seller">
+              <div class="item-card-seller-avatar" style="background:linear-gradient(135deg,#ec4899,#be185d);"></div>
+              <span class="item-card-seller-name">战神联盟</span>
+            </div>
+          </div>
+        </a>
+        
+        <!-- 道具卡片 3 -->
+        <a href="item-detail.html?id=AWM狙擊步槍&type=guns" class="item-card" data-category="武器皮肤">
+          <div class="item-card-image">
+            <img src="picture/guns_AWM狙擊步槍.png" alt="AWM狙擊步槍" style="width:100%;height:100%;object-fit:contain;background:linear-gradient(135deg,#2d1b4e 0%,#1a0f2e 100%);">
+            <span class="item-card-badge badge-legendary">传说</span>
+          </div>
+          <div class="item-card-content">
+            <div class="item-card-category">武器皮肤 · 狙击步枪</div>
+            <h3 class="item-card-title">AWM 极地猎人</h3>
+            <div class="item-card-price">
+              <span class="item-card-price-current">¥599</span>
+            </div>
+            <div class="item-card-seller">
+              <div class="item-card-seller-avatar" style="background:linear-gradient(135deg,#22c55e,#16a34a);"></div>
+              <span class="item-card-seller-name">狙神俱乐部</span>
+            </div>
+          </div>
+        </a>
+        
+        <!-- 道具卡片 4 -->
+        <a href="item-detail.html?id=泰坦防彈裝甲&type=protect" class="item-card" data-category="角色外观">
+          <div class="item-card-image">
+            <img src="picture/protect_泰坦防彈裝甲.png" alt="泰坦防彈裝甲" style="width:100%;height:100%;object-fit:contain;background:linear-gradient(135deg,#0f3460 0%,#16213e 100%);">
+            <span class="item-card-badge badge-legendary">传说</span>
+          </div>
+          <div class="item-card-content">
+            <div class="item-card-category">角色外观 · 6级护甲</div>
+            <h3 class="item-card-title">泰坦防弹装甲</h3>
+            <div class="item-card-price">
+              <span class="item-card-price-current">¥388</span>
+              <span class="item-card-price-old">¥488</span>
+            </div>
+            <div class="item-card-seller">
+              <div class="item-card-seller-avatar" style="background:linear-gradient(135deg,#a855f7,#7c3aed);"></div>
+              <span class="item-card-seller-name">三角洲老兵</span>
+            </div>
+          </div>
+        </a>
+      </div>
+      
+      <div class="text-center mt-8">
+        <a href="marketplace.html" class="btn btn-outline">
+          查看更多道具 →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 游戏工具 -->
+  <section class="section" style="background-color: var(--bg-secondary);">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">🛠️ 游戏工具</h2>
+        <p class="section-subtitle">专业的三角洲行动数据工具，助你成为战场之王</p>
+      </div>
+      
+      <div class="tools-grid">
+        <!-- 工具卡片 1 -->
+        <div class="feature-card">
+          <div class="feature-card-icon">📊</div>
+          <h3 class="feature-card-title">武器数据库</h3>
+          <p class="feature-card-description">
+            全面的武器数据对比，包括伤害、射速、后坐力、配件适配性等详细参数
+          </p>
+          <a href="tools/weapons.html" class="btn btn-primary btn-sm mt-4">立即使用</a>
+        </div>
+        
+        <!-- 工具卡片 2 -->
+        <div class="feature-card">
+          <div class="feature-card-icon" style="background: linear-gradient(135deg, var(--accent-500) 0%, var(--accent-600) 100%);">🧮</div>
+          <h3 class="feature-card-title">伤害计算器</h3>
+          <p class="feature-card-description">
+            精确计算不同距离、护甲、部位的伤害数值，帮你选择最佳配装方案
+          </p>
+          <a href="tools/calculator.html" class="btn btn-accent btn-sm mt-4">立即使用</a>
+        </div>
+        
+        <!-- 工具卡片 3 -->
+        <div class="feature-card">
+          <div class="feature-card-icon" style="background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);">📚</div>
+          <h3 class="feature-card-title">攻略中心</h3>
+          <p class="feature-card-description">
+            职业玩家分享的地图攻略、战术打法、配装推荐，从入门到精通
+          </p>
+          <a href="tools/guides.html" class="btn btn-secondary btn-sm mt-4">查看攻略</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 为什么选择我们 -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">✨ 为什么选择三角洲交易</h2>
+        <p class="section-subtitle">我们致力于打造最安全、最便捷的游戏道具交易体验</p>
+      </div>
+      
+      <div class="grid grid-cols-4 gap-6" style="grid-template-columns: repeat(4, 1fr);">
+        <div class="stat-card">
+          <div class="stat-card-value" style="color: var(--success-500);">🔒</div>
+          <div class="stat-card-label mt-4">担保交易</div>
+          <p class="text-sm text-secondary mt-2 mb-0">资金由平台托管，确保买卖双方权益</p>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-card-value" style="color: var(--primary-500);">⚡</div>
+          <div class="stat-card-label mt-4">极速响应</div>
+          <p class="text-sm text-secondary mt-2 mb-0">7×24小时客服支持，问题快速解决</p>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-card-value" style="color: var(--accent-500);">💰</div>
+          <div class="stat-card-label mt-4">低费率</div>
+          <p class="text-sm text-secondary mt-2 mb-0">仅收取5%手续费，比同行低50%</p>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-card-value" style="color: #8b5cf6;">🎮</div>
+          <div class="stat-card-label mt-4">专业工具</div>
+          <p class="text-sm text-secondary mt-2 mb-0">免费提供武器数据、攻略等实用工具</p>
+        </div>
+      </div>
+      
+      <!-- 信任标识 -->
+      <div class="trust-badges">
+        <div class="trust-badge">
+          <span class="trust-badge-icon">✓</span>
+          <span>实名认证</span>
+        </div>
+        <div class="trust-badge">
+          <span class="trust-badge-icon">✓</span>
+          <span>SSL加密</span>
+        </div>
+        <div class="trust-badge">
+          <span class="trust-badge-icon">✓</span>
+          <span>资金托管</span>
+        </div>
+        <div class="trust-badge">
+          <span class="trust-badge-icon">✓</span>
+          <span>7天无忧退款</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA区域 -->
+  <section class="cta-section">
+    <div class="container">
+      <h2 class="cta-title">准备好开始交易了吗？</h2>
+      <p class="cta-subtitle">加入 10,000+ 三角洲行动玩家，开启你的交易之旅</p>
+      <div class="flex justify-center gap-4">
+        <a href="auth/register.html" class="btn btn-lg" style="background: white; color: var(--primary-700);">
+          🚀 立即注册
+        </a>
+        <a href="marketplace.html" class="btn btn-lg btn-outline" style="border-color: white; color: white;">
+          浏览市场
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 页脚 -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand">
+            <img src="https://buff.163.com/static/images/site/logo.png" alt="BUFF" style="height:24px;">
+            三角洲交易
+          </div>
+          <p class="footer-description">
+            专业的三角洲行动道具交易平台，为玩家提供安全、便捷、低费率的交易服务，同时提供丰富的游戏工具和攻略内容。
+          </p>
+        </div>
+        
+        <div>
+          <h4 class="footer-title">交易</h4>
+          <ul class="footer-links">
+            <li><a href="marketplace.html">道具市场</a></li>
+            <li><a href="publish.html">发布道具</a></li>
+            <li><a href="#">交易规则</a></li>
+            <li><a href="#">费率说明</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="footer-title">工具</h4>
+          <ul class="footer-links">
+            <li><a href="tools/weapons.html">武器数据库</a></li>
+            <li><a href="tools/calculator.html">伤害计算器</a></li>
+            <li><a href="tools/guides.html">攻略中心</a></li>
+            <li><a href="#">地图战术</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="footer-title">支持</h4>
+          <ul class="footer-links">
+            <li><a href="#">帮助中心</a></li>
+            <li><a href="#">联系客服</a></li>
+            <li><a href="#">用户协议</a></li>
+            <li><a href="#">隐私政策</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>© 2024 三角洲交易. 保留所有权利。</p>
+        <p class="mt-2" style="font-size: 12px;">
+          本平台与《三角洲行动》游戏官方无关联，仅为玩家提供第三方交易服务。
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 脚本 -->
+  <script src="js/theme.js"></script>
+  
+  <!-- 首页筛选逻辑 -->
+  <script>
+    // 道具筛选功能
+    (function() {
+      const filterTabs = document.querySelectorAll('.filter-tabs .filter-tab');
+      const itemsGrid = document.getElementById('itemsGrid');
+      const itemCards = itemsGrid ? itemsGrid.querySelectorAll('.item-card') : [];
+      
+      filterTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+          // 更新活动状态
+          filterTabs.forEach(t => t.classList.remove('active'));
+          this.classList.add('active');
+          
+          const selectedCategory = this.textContent.trim();
+          
+          // 筛选道具
+          itemCards.forEach(card => {
+            const cardCategory = card.dataset.category;
+            
+            if (selectedCategory === '全部' || cardCategory === selectedCategory) {
+              card.style.display = '';
+              card.style.animation = 'fadeIn 0.3s ease';
+            } else {
+              card.style.display = 'none';
+            }
+          });
+          
+          // 检查是否没有匹配项（显示提示）
+          const visibleCards = [...itemCards].filter(card => card.style.display !== 'none');
+          const existingEmpty = itemsGrid.querySelector('.empty-state');
+          
+          if (visibleCards.length === 0 && !existingEmpty) {
+            const emptyMsg = document.createElement('div');
+            emptyMsg.className = 'empty-state';
+            emptyMsg.style.gridColumn = '1/-1';
+            emptyMsg.style.textAlign = 'center';
+            emptyMsg.style.padding = '3rem';
+            emptyMsg.style.color = 'var(--text-secondary)';
+            emptyMsg.innerHTML = `
+              <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
+              <p>暂无 "${selectedCategory}" 类别的道具</p>
+              <a href="marketplace.html" class="btn btn-primary btn-sm" style="margin-top: 1rem;">去市场看看</a>
+            `;
+            itemsGrid.appendChild(emptyMsg);
+          } else if (existingEmpty && visibleCards.length > 0) {
+            existingEmpty.remove();
+          }
+        });
+      });
+      
+      // 添加淡入动画样式
+      if (!document.getElementById('filter-animations')) {
+        const style = document.createElement('style');
+        style.id = 'filter-animations';
+        style.textContent = `
+          @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+        `;
+        document.head.appendChild(style);
+      }
+    })();
+  </script>
+</body>
+</html>

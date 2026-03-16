@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="在 Delta Trade 发布你的三角洲行动游戏道具，安全快速出售">
+  <title>发布道具 - Delta Trade</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/components.css">
+  
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('delta-trade-theme');
+      if (savedTheme && savedTheme !== 'system') {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      }
+    })();
+  </script>
+  
+  <style>
+    .publish-header {
+      background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+      padding: var(--space-12) 0;
+      border-bottom: 1px solid var(--border-primary);
+    }
+    
+    .publish-header h1 {
+      font-size: var(--text-3xl);
+      margin-bottom: var(--space-2);
+    }
+    
+    .publish-header p {
+      color: var(--text-secondary);
+      margin-bottom: 0;
+    }
+    
+    .publish-layout {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: var(--space-8);
+      padding: var(--space-8) 0;
+    }
+    
+    @media (max-width: 1024px) {
+      .publish-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .form-section {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+      margin-bottom: var(--space-6);
+    }
+    
+    .form-section-title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      margin-bottom: var(--space-5);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    
+    .form-group {
+      margin-bottom: var(--space-5);
+    }
+    
+    .form-label {
+      display: block;
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-2);
+    }
+    
+    .form-label .required {
+      color: var(--danger-500);
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: var(--space-3) var(--space-4);
+      font-size: var(--text-base);
+      color: var(--text-primary);
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-lg);
+      transition: border-color var(--transition-fast);
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary-500);
+    }
+    
+    .form-input::placeholder {
+      color: var(--text-tertiary);
+    }
+    
+    textarea.form-input {
+      min-height: 120px;
+      resize: vertical;
+    }
+    
+    .form-select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236b7280' viewBox='0 0 16 16'%3E%3Cpath d='M8 10.5l-4-4h8l-4 4z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: var(--space-10);
+    }
+    
+    .form-hint {
+      font-size: var(--text-xs);
+      color: var(--text-tertiary);
+      margin-top: var(--space-1);
+    }
+    
+    .image-upload {
+      border: 2px dashed var(--border-secondary);
+      border-radius: var(--radius-xl);
+      padding: var(--space-8);
+      text-align: center;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    
+    .image-upload:hover {
+      border-color: var(--primary-500);
+      background-color: var(--bg-hover);
+    }
+    
+    .image-upload-icon {
+      font-size: 3rem;
+      margin-bottom: var(--space-4);
+    }
+    
+    .image-upload-text {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+    }
+    
+    .image-upload-hint {
+      font-size: var(--text-xs);
+      color: var(--text-tertiary);
+      margin-top: var(--space-2);
+    }
+    
+    .price-input-group {
+      position: relative;
+    }
+    
+    .price-input-group .currency {
+      position: absolute;
+      left: var(--space-4);
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    
+    .price-input-group .form-input {
+      padding-left: var(--space-8);
+    }
+    
+    .sidebar-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+      position: sticky;
+      top: calc(var(--navbar-height) + var(--space-6));
+    }
+    
+    .sidebar-title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      margin-bottom: var(--space-5);
+    }
+    
+    .preview-item {
+      background-color: var(--bg-secondary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      margin-bottom: var(--space-4);
+    }
+    
+    .preview-image {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      margin-bottom: var(--space-3);
+    }
+    
+    .preview-title {
+      font-weight: 600;
+      margin-bottom: var(--space-1);
+    }
+    
+    .preview-category {
+      font-size: var(--text-xs);
+      color: var(--text-tertiary);
+    }
+    
+    .preview-price {
+      font-size: var(--text-xl);
+      font-weight: 700;
+      color: var(--accent-500);
+      margin-top: var(--space-3);
+    }
+    
+    .fee-breakdown {
+      border-top: 1px solid var(--border-primary);
+      padding-top: var(--space-4);
+      margin-top: var(--space-4);
+    }
+    
+    .fee-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: var(--text-sm);
+      margin-bottom: var(--space-2);
+    }
+    
+    .fee-row.total {
+      font-weight: 600;
+      font-size: var(--text-base);
+      padding-top: var(--space-2);
+      border-top: 1px solid var(--border-primary);
+      margin-top: var(--space-2);
+    }
+    
+    .fee-row .label {
+      color: var(--text-secondary);
+    }
+    
+    .tips-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .tips-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-2);
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      margin-bottom: var(--space-3);
+    }
+    
+    .tips-list li::before {
+      content: "💡";
+      flex-shrink: 0;
+    }
+    
+    .rarity-options {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-2);
+    }
+    
+    .rarity-option {
+      padding: var(--space-3);
+      text-align: center;
+      font-size: var(--text-sm);
+      font-weight: 500;
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    
+    .rarity-option:hover {
+      background-color: var(--bg-hover);
+    }
+    
+    .rarity-option.active {
+      border-color: var(--primary-500);
+      background-color: var(--primary-500);
+      color: white;
+    }
+    
+    .rarity-option[data-rarity="legendary"] { border-color: var(--legendary-color); }
+    .rarity-option[data-rarity="legendary"].active { background: linear-gradient(135deg, #f59e0b, #d97706); }
+    
+    .rarity-option[data-rarity="epic"] { border-color: var(--epic-color); }
+    .rarity-option[data-rarity="epic"].active { background: linear-gradient(135deg, #a855f7, #7c3aed); }
+    
+    .rarity-option[data-rarity="rare"] { border-color: var(--rare-color); }
+    .rarity-option[data-rarity="rare"].active { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+    
+    .rarity-option[data-rarity="common"] { border-color: var(--common-color); }
+    .rarity-option[data-rarity="common"].active { background: linear-gradient(135deg, #6b7280, #4b5563); }
+  </style>
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a href="index.html" class="navbar-brand">
+        <div class="navbar-logo">Δ</div>
+        <span>Delta Trade</span>
+      </a>
+      
+      <ul class="navbar-nav hide-mobile">
+        <li><a href="index.html" class="navbar-link">首页</a></li>
+        <li><a href="marketplace.html" class="navbar-link">道具市场</a></li>
+        <li><a href="tools/weapons.html" class="navbar-link">武器数据库</a></li>
+        <li><a href="tools/guides.html" class="navbar-link">攻略中心</a></li>
+      </ul>
+      
+      <div class="navbar-actions">
+        <div class="theme-toggle hide-mobile" role="radiogroup" aria-label="主题选择">
+          <button class="theme-toggle-option" data-theme="light" role="radio">☀️</button>
+          <button class="theme-toggle-option" data-theme="dark" role="radio">🌙</button>
+          <button class="theme-toggle-option active" data-theme="system" role="radio">💻</button>
+        </div>
+        <a href="auth/login.html" class="btn btn-secondary btn-sm hide-mobile">登录</a>
+        <a href="auth/register.html" class="btn btn-primary btn-sm">免费注册</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 发布头部 -->
+  <section class="publish-header">
+    <div class="container">
+      <h1>📦 发布道具</h1>
+      <p>上架你的三角洲行动道具，安全便捷地出售给其他玩家</p>
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="publish-layout">
+      <!-- 表单区域 -->
+      <div>
+        <!-- 基本信息 -->
+        <div class="form-section">
+          <h2 class="form-section-title">📝 基本信息</h2>
+          
+          <div class="form-group">
+            <label class="form-label">道具名称 <span class="required">*</span></label>
+            <input type="text" class="form-input" id="itemName" placeholder="例如：暗夜猎手 AK-47 皮肤">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">道具类型 <span class="required">*</span></label>
+            <select class="form-input form-select" id="itemCategory">
+              <option value="">请选择类型</option>
+              <option value="武器皮肤">武器皮肤</option>
+              <option value="角色外观">角色外观</option>
+              <option value="载具涂装">载具涂装</option>
+              <option value="配件">配件</option>
+              <option value="限定">限定道具</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">稀有度 <span class="required">*</span></label>
+            <div class="rarity-options">
+              <div class="rarity-option" data-rarity="legendary">传说</div>
+              <div class="rarity-option active" data-rarity="epic">史诗</div>
+              <div class="rarity-option" data-rarity="rare">稀有</div>
+              <div class="rarity-option" data-rarity="common">普通</div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">道具描述</label>
+            <textarea class="form-input" id="itemDesc" placeholder="描述道具的特点、获取方式、使用情况等..."></textarea>
+            <p class="form-hint">详细的描述能帮助买家更好地了解道具</p>
+          </div>
+        </div>
+        
+        <!-- 图片上传 -->
+        <div class="form-section">
+          <h2 class="form-section-title">📷 道具图片</h2>
+          
+          <div class="image-upload" id="imageUpload">
+            <div class="image-upload-icon">📤</div>
+            <p class="image-upload-text">点击或拖拽上传道具截图</p>
+            <p class="image-upload-hint">支持 JPG、PNG 格式，最多 5 张，单张不超过 5MB</p>
+          </div>
+        </div>
+        
+        <!-- 定价信息 -->
+        <div class="form-section">
+          <h2 class="form-section-title">💰 定价信息</h2>
+          
+          <div class="form-group">
+            <label class="form-label">售价 <span class="required">*</span></label>
+            <div class="price-input-group">
+              <span class="currency">¥</span>
+              <input type="number" class="form-input" id="itemPrice" placeholder="0.00" min="1" step="0.01">
+            </div>
+            <p class="form-hint">建议参考市场同类道具价格进行定价</p>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">
+              <input type="checkbox" id="allowBargain" checked> 允许议价
+            </label>
+          </div>
+        </div>
+        
+        <!-- 提交按钮 -->
+        <div class="flex gap-4">
+          <button type="button" class="btn btn-primary btn-lg flex-1" onclick="submitItem()">
+            🚀 发布道具
+          </button>
+          <button type="button" class="btn btn-secondary btn-lg">
+            💾 保存草稿
+          </button>
+        </div>
+      </div>
+      
+      <!-- 侧边栏 -->
+      <div>
+        <!-- 预览卡片 -->
+        <div class="sidebar-card">
+          <h3 class="sidebar-title">📱 发布预览</h3>
+          
+          <div class="preview-item">
+            <div class="preview-image">🔫</div>
+            <div class="preview-category">武器皮肤</div>
+            <div class="preview-title" id="previewTitle">道具名称</div>
+            <div class="preview-price" id="previewPrice">¥0.00</div>
+          </div>
+          
+          <div class="fee-breakdown">
+            <div class="fee-row">
+              <span class="label">售价</span>
+              <span id="feePrice">¥0.00</span>
+            </div>
+            <div class="fee-row">
+              <span class="label">平台手续费 (5%)</span>
+              <span id="feePlatform">-¥0.00</span>
+            </div>
+            <div class="fee-row total">
+              <span>实际到手</span>
+              <span id="feeTotal" style="color: var(--success-500);">¥0.00</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 发布技巧 -->
+        <div class="sidebar-card" style="margin-top: var(--space-6);">
+          <h3 class="sidebar-title">💡 发布技巧</h3>
+          <ul class="tips-list">
+            <li>上传清晰的游戏内截图，展示道具外观</li>
+            <li>合理定价，参考市场同类道具价格</li>
+            <li>详细描述道具特点和使用情况</li>
+            <li>及时响应买家咨询，提高成交率</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 页脚 -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom" style="margin-top:0;padding-top:0;border-top:none;">
+        <p>© 2024 Delta Trade. 保留所有权利。</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/theme.js"></script>
+  <script>
+    // 稀有度选择
+    document.querySelectorAll('.rarity-option').forEach(opt => {
+      opt.addEventListener('click', function() {
+        document.querySelectorAll('.rarity-option').forEach(o => o.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+    
+    // 实时预览
+    document.getElementById('itemName').addEventListener('input', function() {
+      document.getElementById('previewTitle').textContent = this.value || '道具名称';
+    });
+    
+    document.getElementById('itemPrice').addEventListener('input', function() {
+      const price = parseFloat(this.value) || 0;
+      const fee = price * 0.05;
+      const total = price - fee;
+      
+      document.getElementById('previewPrice').textContent = '¥' + price.toFixed(2);
+      document.getElementById('feePrice').textContent = '¥' + price.toFixed(2);
+      document.getElementById('feePlatform').textContent = '-¥' + fee.toFixed(2);
+      document.getElementById('feeTotal').textContent = '¥' + total.toFixed(2);
+    });
+    
+    // 提交道具
+    function submitItem() {
+      const name = document.getElementById('itemName').value;
+      const category = document.getElementById('itemCategory').value;
+      const price = document.getElementById('itemPrice').value;
+      
+      if (!name || !category || !price) {
+        alert('请填写完整信息');
+        return;
+      }
+      
+      alert('✅ 道具发布成功！\n\n道具将在审核通过后上架市场。');
+    }
+  </script>
+</body>
+</html>

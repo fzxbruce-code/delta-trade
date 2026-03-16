@@ -1,0 +1,1226 @@
+<updated-code><!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Delta Trade 道具市场 - 浏览和购买三角洲行动游戏道具、皮肤、装饰品">
+  <title>道具市场 - 三角洲交易</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/components.css">
+  
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('delta-trade-theme');
+      if (savedTheme && savedTheme !== 'system') {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      }
+    })();
+  </script>
+  
+  <style>
+    .marketplace-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: var(--space-8);
+      padding: var(--space-8) 0;
+    }
+    
+    @media (max-width: 1024px) {
+      .marketplace-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .sidebar {
+      position: sticky;
+      top: 88px;
+      height: fit-content;
+    }
+    
+    @media (max-width: 1024px) {
+      .sidebar {
+        position: static;
+      }
+    }
+    
+    .sidebar-section {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-xl);
+      padding: var(--space-5);
+      margin-bottom: var(--space-4);
+    }
+    
+    .sidebar-title {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: var(--space-4);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .category-list {
+      list-style: none;
+    }
+    
+    .category-item {
+      padding: var(--space-2) var(--space-3);
+      margin-bottom: var(--space-1);
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .category-item:hover {
+      background-color: var(--bg-hover);
+      color: var(--text-primary);
+    }
+    
+    .category-item.active {
+      background-color: var(--primary-500);
+      color: var(--text-inverse);
+    }
+    
+    .category-count {
+      font-size: var(--text-xs);
+      padding: 2px 8px;
+      background-color: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+    }
+    
+    .category-item.active .category-count {
+      background-color: rgba(255,255,255,0.2);
+    }
+    
+    .price-range {
+      display: flex;
+      gap: var(--space-2);
+      align-items: center;
+    }
+    
+    .price-input {
+      flex: 1;
+      padding: var(--space-2) var(--space-3);
+      font-size: var(--text-sm);
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+    }
+    
+    .price-input:focus {
+      outline: none;
+      border-color: var(--primary-500);
+    }
+    
+    .checkbox-group label {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) 0;
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+    
+    .checkbox-group label:hover {
+      color: var(--text-primary);
+    }
+    
+    .checkbox-group input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary-500);
+    }
+    
+    .main-content {
+      min-width: 0;
+    }
+    
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-6);
+      flex-wrap: wrap;
+      gap: var(--space-4);
+    }
+    
+    .results-count {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+    }
+    
+    .results-count strong {
+      color: var(--text-primary);
+    }
+    
+    .sort-select {
+      padding: var(--space-2) var(--space-4);
+      font-size: var(--text-sm);
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-lg);
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+    
+    .sort-select:focus {
+      outline: none;
+      border-color: var(--primary-500);
+    }
+    
+    .items-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-6);
+    }
+    
+    @media (max-width: 1200px) {
+      .items-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (max-width: 640px) {
+      .items-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: var(--space-16) var(--space-8);
+    }
+    
+    .empty-state-icon {
+      font-size: 4rem;
+      margin-bottom: var(--space-4);
+    }
+    
+    .empty-state-title {
+      font-size: var(--text-xl);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: var(--space-2);
+    }
+    
+    .empty-state-description {
+      color: var(--text-secondary);
+      margin-bottom: var(--space-6);
+    }
+  </style>
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a href="index.html" class="navbar-brand">
+        <img src="https://buff.163.com/static/images/site/logo.png" alt="BUFF" style="height:28px;" class="logo-dark">
+        <img src="images/buff-logo-dark.png" alt="BUFF" style="height:28px;" class="logo-light">
+        <span>三角洲交易</span>
+      </a>
+      
+      <ul class="navbar-nav hide-mobile">
+        <li><a href="index.html" class="navbar-link">首页</a></li>
+        <li><a href="marketplace.html" class="navbar-link active">道具市场</a></li>
+        <li><a href="tools/weapons.html" class="navbar-link">武器数据库</a></li>
+        <li><a href="tools/guides.html" class="navbar-link">攻略中心</a></li>
+      </ul>
+      
+      <div class="navbar-actions">
+        <a href="publish.html" class="btn btn-accent btn-sm hide-mobile">📦 上架道具</a>
+        <div class="theme-toggle hide-mobile" role="radiogroup" aria-label="主题选择">
+          <button class="theme-toggle-option" data-theme="light" role="radio">☀️</button>
+          <button class="theme-toggle-option active" data-theme="dark" role="radio">🌙</button>
+        </div>
+        <a href="auth/login.html" class="btn btn-secondary btn-sm hide-mobile">登录</a>
+        <a href="auth/register.html" class="btn btn-primary btn-sm">免费注册</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 搜索区域 -->
+  <section style="background-color: var(--bg-secondary); padding: var(--space-8) 0; border-bottom: 1px solid var(--border-primary);">
+    <div class="container">
+      <div class="search-box" style="max-width: 600px; margin: 0 auto;">
+        <span class="search-box-icon">🔍</span>
+        <input type="text" class="search-box-input" id="searchInput" placeholder="搜索道具名称、类型、卖家..." onkeypress="handleSearchKeypress(event)">
+      </div>
+    </div>
+  </section>
+
+  <!-- 市场内容 -->
+  <div class="container">
+    <div class="marketplace-layout">
+      <!-- 侧边栏筛选 -->
+      <aside class="sidebar">
+        <div class="sidebar-section">
+          <h3 class="sidebar-title">道具分类</h3>
+          <ul class="category-list">
+            <li class="category-item active">
+              <span>全部道具</span>
+              <span class="category-count">2,458</span>
+            </li>
+            <li class="category-item">
+              <span>武器皮肤</span>
+              <span class="category-count">892</span>
+            </li>
+            <li class="category-item">
+              <span>角色外观</span>
+              <span class="category-count">456</span>
+            </li>
+            <li class="category-item">
+              <span>载具涂装</span>
+              <span class="category-count">234</span>
+            </li>
+            <li class="category-item">
+              <span>配件装饰</span>
+              <span class="category-count">567</span>
+            </li>
+            <li class="category-item">
+              <span>限定道具</span>
+              <span class="category-count">89</span>
+            </li>
+            <li class="category-item">
+              <span>通行证奖励</span>
+              <span class="category-count">220</span>
+            </li>
+          </ul>
+        </div>
+        
+        <div class="sidebar-section">
+          <h3 class="sidebar-title">价格区间</h3>
+          <div class="price-range">
+            <input type="number" class="price-input" placeholder="最低">
+            <span style="color: var(--text-tertiary);">-</span>
+            <input type="number" class="price-input" placeholder="最高">
+          </div>
+          <button class="btn btn-secondary btn-sm mt-4" style="width: 100%;">应用筛选</button>
+        </div>
+        
+        <div class="sidebar-section">
+          <h3 class="sidebar-title">稀有度</h3>
+          <div class="checkbox-group">
+            <label><input type="checkbox"> 传说 (Legendary)</label>
+            <label><input type="checkbox"> 史诗 (Epic)</label>
+            <label><input type="checkbox"> 稀有 (Rare)</label>
+            <label><input type="checkbox"> 普通 (Common)</label>
+          </div>
+        </div>
+        
+        <div class="sidebar-section">
+          <h3 class="sidebar-title">其他筛选</h3>
+          <div class="checkbox-group">
+            <label><input type="checkbox"> 仅显示认证卖家</label>
+            <label><input type="checkbox"> 可还价</label>
+            <label><input type="checkbox"> 急售 (低于市场价)</label>
+          </div>
+        </div>
+      </aside>
+      
+      <!-- 主内容区 -->
+      <main class="main-content">
+        <div class="toolbar">
+          <div class="results-count">
+            找到 <strong>2,458</strong> 件道具
+          </div>
+          <div class="flex gap-4 items-center">
+            <select class="sort-select">
+              <option>默认排序</option>
+              <option>价格从低到高</option>
+              <option>价格从高到低</option>
+              <option>最新上架</option>
+              <option>热度最高</option>
+            </select>
+          </div>
+        </div>
+        
+        <!-- 道具网格 -->
+        <div class="items-grid" id="itemsGrid">
+          <!-- 道具卡片 1: AK-12突擊步槍 -->
+          <a href="item-detail.html?id=AK-12突擊步槍&type=guns" class="item-card" data-category="武器皮肤" data-rarity="传说" data-price="299" data-certified="true" data-bargain="false" data-urgent="false" data-name="AK-12突擊步槍" data-seller="ProGamer_小明">
+            <div class="item-card-image">
+              <img src="picture/guns_AK-12突擊步槍.png" alt="AK-12突擊步槍" style="width:100%;height:100%;object-fit:contain;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);">
+              <span class="item-card-badge badge-legendary">传说</span>
+            </div>
+            <div class="item-card-content">
+              <div class="item-card-category">武器皮肤 · 步枪</div>
+              <h3 class="item-card-title">AK-12 暗夜猎手</h3>
+              <div class="item-card-price">
+                <span class="item-card-price-current">¥299</span>
+                <span class="item-card-price-old">¥399</span>
+              </div>
+              <div class="item-card-seller">
+                <div class="item-card-seller-avatar" style="background:linear-gradient(135deg,#8b5cf6,#6366f1);"></div>
+                <span class="item-card-seller-name">ProGamer_小明</span>
+                <span class="tag tag-success ml-2" style="margin-left:auto;">认证</span>
+              </div>
+            </div>
+          </a>
+          
+          <!-- 道具卡片 2: 泰坦防彈裝甲 -->
+          <a href="item-detail.html?id=泰坦防彈裝甲&type=protect" class="item-card" data-category="角色外观" data-rarity="传说" data-price="388" data-certified="true" data-bargain="false" data-urgent="false" data-name="泰坦防彈裝甲" data-seller="战神联盟">
+            <div class="item-card-image">
+              <img src="picture/protect_泰坦防彈裝甲.png" alt="泰坦防彈裝甲" style="width:100%;height:100%;object-fit:contain;background:linear-gradient(135deg,#0f3460 0%,#16213e 100%);">
+              <span class="item-card-badge badge-legendary">传说</span>
+            </div>
+            <div class="item-card-content">
+              <div class="item-card-category">角色外观 · 6级护甲</div>
+              <h3 class="item-card-title">泰坦防弹装甲</h3>
+              <div class="item-card-price">
+                <span class="item-card-price-current">¥388</span>
+              </div>
+              <div class="item-card-seller">
+                <div class="item-card-seller-avatar" style="background:linear-gradient(135deg,#ec4899,#be185d);"></div>
+                <span class="item-card-seller-name">战神联盟</span>
+                <span class="tag tag-success ml-2" style="margin-left:auto;">认证</span>
+              </div>
+            </div>
+          </a>
+          
+          <!-- 道具卡片 3: AWM狙擊步槍 -->
+          <a href="item-detail.html?id=AWM狙擊步槍&type=guns" class="item-card" data-category="武器皮肤" data-rarity="传说" data-price="599" data-certified="true" data-bargain="false" data-urgent="false" data-name="AWM狙擊步槍" data-seller="狙神俱乐部">
+            <div class="item-card-image">
+              <img src="picture/guns_AWM狙擊步槍.png" alt="AWM狙擊步槍" style="width:100%;height:100%;object-fit:contain;background:linear-gradient(135deg,#2d1b4e 0%,#1a0f2e 100%);">
+              <span class="item-card-badge badge-legendary">传说</span>
+            </div>
+            <div class="item-card-content">
+              <div class="item-card-category">武器皮肤 · 狙击步枪</div>
+              <h3 class="item-card-title">AWM 极地猎人</h3>
+              <div class="item-card-price">
+                <span class="item-card-price-current">¥599</span>
+              </div>
+              <div class="item-card-seller">
+                <div class="item-card-seller-avatar" style="background:linear-gradient(135deg,#a855f7,#7c3aed);"></div>
+                <span class="item-card-seller-name">狙神俱乐部</span>
+                <span class="tag tag-success ml-2" style="margin-left:auto;">认证</span>
+              </div>
+            </div>
+          </a>
+          
+          <!-- 道具卡片 4: DICH-9重型頭盔 -->
+          <a href="item-detail.html?id=DICH-9重型頭盔&type=protect" class="item-card" data-category="角色外观" data-rarity="传说" data-price="458" data-certified="false" data-bargain="true" data-urgent="false" data-name="DICH-9重型頭盔" data-seller="装备大师">
+            <div class="item-card-image">
+              <img src="picture/protect_DICH-9重型頭盔.png" alt="DICH-9重型頭盔" style="width:100%;height:100%;object-fit:contain;background:linear-gradient(135deg,#1e3a5f 0%,#0d2137 100%);">
+              <span class="item-card-badge badge-legendary">传说</span>
+            </div>
+            <div class="item-card-content">
+              <div class="item-card-category">角色外观 · 6级头盔</div>
+              <h3 class="item-card-title">DICH-9 重型头盔</h3>
+              <div class="item-card-price">
+                <span class="item-card-price-current">¥458</span>
+                <span class="item-card-price-old">¥558</span>
+              </div>
+              <div class="item-card-seller">
+                <div class="item-card-seller-avatar" style="background:linear-gradient(135deg,#22c55e,#16a34a);"></div>
+                <span class="item-card-seller-name">装备大师</span>
+              </div>
+            </div>
+          </a>
+          
+          <!-- 道具卡片 5: M4A1突擊步槍 -->
+          <a href="item-detail.html?id=M4A1突擊步槍&type=guns" class="item-card" data-category="武器皮肤" data-rarity="史诗" data-price="199" data-certified="true" data-bargain="false" data-urgent="false" data-name="M4A1突擊步槍" data-seller="精英射手">
+            <div class="item-card-image">
+              <img src="picture/guns_M4A1突擊步槍.png" alt="M4A1突擊步槍" style="width:100%;height:100%;object-fit:contain;background:linear-gradient(135deg,#14532d 0%,#166534 100%);">
+              <span class="item-card-badge badge-epic">史诗</span>
+            </div>
+            <div class="item-card-content">
+              <div class="item-card-category">武器皮肤 · 步枪</div>
+              <h3 class="item-card-title">M4A1 丛林迷彩</h3>
+              <div class="item-card-price">
+                <span class="item-card-price-current">¥199</span>
+              </div>
+              <div class="item-card-seller">
+                <div class="item-card-seller-avatar" style="background:linear-gradient(135deg,#22c55e,#16a34a);"></div>
+                <span class="item-card-seller-name">精英射手</span>
+                <span class="tag tag-success ml-2" style="margin-left:auto;">认证</span>
+              </div>
+            </div>
+          </a>
+          
+          <!-- 道具卡片 6: SCAR-H戰鬥步槍 -->
+          <a href="item-detail.html?id=SCAR-H戰鬥步槍&type=guns" class="item-card" data-category="武器皮肤" data-rarity="史诗" data-price="258" data-certified="false" data-bargain="true" data-urgent="true" data-name="SCAR-H戰鬥步槍" data-seller="战术玩家">
+            <div class="item-card-image">
+              <img src="picture/guns_SCAR-H戰鬥步槍.png" alt="SCAR-H戰鬥步槍" style="width:100%;height:100%;object-fit:contain;background:linear-gradient(135deg,#854d0e 0%,#a16207 100%);">
+              <span class="item-card-badge badge-epic">史诗</span>
+            </div>
+            <div class="item-card-content">
+              <div class="item-card-category">武器皮肤 · 步枪</div>
+              <h3 class="item-card-title">SCAR-H 沙漠风暴</h3>
+              <div class="item-card-price">
+                <span class="item-card-price-current">¥258</span>
+                <span class="item-card-price-old">¥328</span>
+              </div>
+              <div class="item-card-seller">
+                <div class="item-card-seller-avatar" style="background:linear-gradient(135deg,#eab308,#ca8a04);"></div>
+                <span class="item-card-seller-name">战术玩家</span>
+              </div>
+            </div>
+          </a>
+          
+          <!-- 道具卡片 7: GT5指揮官頭盔 -->
+          <a href="item-detail.html?id=GT5指揮官頭盔&type=protect" class="item-card" data-category="角色外观" data-rarity="史诗" data-price="268" data-certified="true" data-bargain="false" data-urgent="false" data-name="GT5指揮官頭盔" data-seller="赛季玩家">
+            <div class="item-card-image">
+              <img src="picture/protect_GT5指揮官頭盔.png" alt="GT5指揮官頭盔" style="width:100%;height:100%;object-fit:contain;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);">
+              <span class="item-card-badge badge-epic">史诗</span>
+            </div>
+            <div class="item-card-content">
+              <div class="item-card-category">角色外观 · 5级头盔</div>
+              <h3 class="item-card-title">GT5 指指挥官头盔</h3>
+              <div class="item-card-price">
+                <span class="item-card-price-current">¥268</span>
+              </div>
+              <div class="item-card-seller">
+                <div class="item-card-seller-avatar" style="background:linear-gradient(135deg,#3b82f6,#2563eb);"></div>
+                <span class="item-card-seller-name">赛季玩家</span>
+                <span class="tag tag-success ml-2" style="margin-left:auto;">认证</span>
+              </div>
+            </div>
+          </a>
+          
+          <!-- 道具卡片 8: Vector衝鋒槍 -->
+          <a href="item-detail.html?id=Vector衝鋒槍&type=guns" class="item-card" data-category="武器皮肤" data-rarity="史诗" data-price="178" data-certified="false" data-bargain="false" data-urgent="false" data-name="Vector衝鋒槍" data-seller="爆破专家">
+            <div class="item-card-image">
+              <img src="picture/guns_Vector衝鋒槍.png" alt="Vector衝鋒槍" style="width:100%;height:100%;object-fit:contain;background:linear-gradient(135deg,#7f1d1d 0%,#991b1b 100%);">
+              <span class="item-card-badge badge-epic">史诗</span>
+            </div>
+            <div class="item-card-content">
+              <div class="item-card-category">武器皮肤 · 冲锋枪</div>
+              <h3 class="item-card-title">Vector 烈焰涂装</h3>
+              <div class="item-card-price">
+                <span class="item-card-price-current">¥178</span>
+              </div>
+              <div class="item-card-seller">
+                <div class="item-card-seller-avatar" style="background:linear-gradient(135deg,#ef4444,#dc2626);"></div>
+                <span class="item-card-seller-name">爆破专家</span>
+              </div>
+            </div>
+          </a>
+          
+          <!-- 道具卡片 9: 精英避弹衣 -->
+          <a href="item-detail.html?id=精英避弹衣&type=protect" class="item-card" data-category="角色外观" data-rarity="史诗" data-price="238" data-certified="false" data-bargain="true" data-urgent="false" data-name="精英避弹衣" data-seller="战甲收藏家">
+            <div class="item-card-image">
+              <img src="picture/protect_精英避弹衣.png" alt="精英避弹衣" style="width:100%;height:100%;object-fit:contain;background:linear-gradient(135deg,#0f3460 0%,#16213e 100%);">
+              <span class="item-card-badge badge-epic">史诗</span>
+            </div>
+            <div class="item-card-content">
+              <div class="item-card-category">角色外观 · 5级护甲</div>
+              <h3 class="item-card-title">精英避弹衣</h3>
+              <div class="item-card-price">
+                <span class="item-card-price-current">¥238</span>
+                <span class="item-card-price-old">¥298</span>
+              </div>
+              <div class="item-card-seller">
+                <div class="item-card-seller-avatar" style="background:linear-gradient(135deg,#6366f1,#4f46e5);"></div>
+                <span class="item-card-seller-name">战甲收藏家</span>
+              </div>
+            </div>
+          </a>
+          
+          <!-- 道具卡片 10: M700狙擊步槍 -->
+          <a href="item-detail.html?id=M700狙擊步槍&type=guns" class="item-card" data-category="武器皮肤" data-rarity="稀有" data-price="156" data-certified="true" data-bargain="false" data-urgent="false" data-name="M700狙擊步槍" data-seller="狙击之王">
+            <div class="item-card-image">
+              <img src="picture/guns_M700狙擊步槍.png" alt="M700狙擊步槍" style="width:100%;height:100%;object-fit:contain;background:linear-gradient(135deg,#14532d 0%,#166534 100%);">
+              <span class="item-card-badge badge-rare">稀有</span>
+            </div>
+            <div class="item-card-content">
+              <div class="item-card-category">武器皮肤 · 狙击步枪</div>
+              <h3 class="item-card-title">M700 丛林猎人</h3>
+              <div class="item-card-price">
+                <span class="item-card-price-current">¥156</span>
+              </div>
+              <div class="item-card-seller">
+                <div class="item-card-seller-avatar" style="background:linear-gradient(135deg,#22c55e,#16a34a);"></div>
+                <span class="item-card-seller-name">狙击之王</span>
+                <span class="tag tag-success ml-2" style="margin-left:auto;">认证</span>
+              </div>
+            </div>
+          </a>
+          
+          <!-- 道具卡片 11: D7戰術背囊 -->
+          <a href="item-detail.html?id=D7戰術背囊&type=protect" class="item-card" data-category="配件装饰" data-rarity="传说" data-price="328" data-certified="false" data-bargain="false" data-urgent="true" data-name="D7戰術背囊" data-seller="背包控">
+            <div class="item-card-image">
+              <img src="picture/protect_D7戰術背囊.png" alt="D7戰術背囊" style="width:100%;height:100%;object-fit:contain;background:linear-gradient(135deg,#1e3a5f 0%,#0d2137 100%);">
+              <span class="item-card-badge badge-legendary">传说</span>
+            </div>
+            <div class="item-card-content">
+              <div class="item-card-category">配件 · 6级背囊</div>
+              <h3 class="item-card-title">D7 战术背囊</h3>
+              <div class="item-card-price">
+                <span class="item-card-price-current">¥328</span>
+              </div>
+              <div class="item-card-seller">
+                <div class="item-card-seller-avatar" style="background:linear-gradient(135deg,#22c55e,#16a34a);"></div>
+                <span class="item-card-seller-name">背包控</span>
+              </div>
+            </div>
+          </a>
+          
+          <!-- 道具卡片 12: MP5衝鋒槍 -->
+          <a href="item-detail.html?id=MP5衝鋒槍&type=guns" class="item-card" data-category="武器皮肤" data-rarity="稀有" data-price="128" data-certified="false" data-bargain="true" data-urgent="false" data-name="MP5衝鋝槍" data-seller="新手小白">
+            <div class="item-card-image">
+              <img src="picture/guns_MP5衝鋝槍.png" alt="MP5衝鋝槍" style="width:100%;height:100%;object-fit:contain;background:linear-gradient(135deg,#78716c 0%,#57534e 100%);">
+              <span class="item-card-badge badge-rare">稀有</span>
+            </div>
+            <div class="item-card-content">
+              <div class="item-card-category">武器皮肤 · 冲锋枪</div>
+              <h3 class="item-card-title">MP5 城市迷彩</h3>
+              <div class="item-card-price">
+                <span class="item-card-price-current">¥128</span>
+              </div>
+              <div class="item-card-seller">
+                <div class="item-card-seller-avatar" style="background:linear-gradient(135deg,#a8a29e,#78716c);"></div>
+                <span class="item-card-seller-name">新手小白</span>
+              </div>
+            </div>
+          </a>
+          
+          <!-- 道具卡片 13: P90衝鋒槍 -->
+          <a href="item-detail.html?id=P90衝鋒槍&type=guns" class="item-card" data-category="武器皮肤" data-rarity="史诗" data-price="218" data-certified="true" data-bargain="false" data-urgent="false" data-name="P90衝鋭槍" data-seller="突击手联盟">
+            <div class="item-card-image">
+              <img src="picture/guns_P90衝鋭槍.png" alt="P90衝鋭槍" style="width:100%;height:100%;object-fit:contain;background:linear-gradient(135deg,#1e40af 0%,#1d4ed8 100%);">
+              <span class="item-card-badge badge-epic">史诗</span>
+            </div>
+            <div class="item-card-content">
+              <div class="item-card-category">武器皮肤 · 冲锋枪</div>
+              <h3 class="item-card-title">P90 科技战士</h3>
+              <div class="item-card-price">
+                <span class="item-card-price-current">¥218</span>
+              </div>
+              <div class="item-card-seller">
+                <div class="item-card-seller-avatar" style="background:linear-gradient(135deg,#3b82f6,#2563eb);"></div>
+                <span class="item-card-seller-name">突击手联盟</span>
+                <span class="tag tag-success ml-2" style="margin-left:auto;">认证</span>
+              </div>
+            </div>
+          </a>
+          
+          <!-- 道具卡片 14: 颶風戰術胸掛 -->
+          <a href="item-detail.html?id=颶風戰術胸掛&type=protect" class="item-card" data-category="配件装饰" data-rarity="史诗" data-price="198" data-certified="false" data-bargain="false" data-urgent="false" data-name="颶風戰術胸掛" data-seller="战术装备店">
+            <div class="item-card-image">
+              <img src="picture/protect_颶風戰術胸掛.png" alt="颶風戰術胸掛" style="width:100%;height:100%;object-fit:contain;background:linear-gradient(135deg,#0f3460 0%,#16213e 100%);">
+              <span class="item-card-badge badge-epic">史诗</span>
+            </div>
+            <div class="item-card-content">
+              <div class="item-card-category">配件 · 5级胸挂</div>
+              <h3 class="item-card-title">飓风战术胸挂</h3>
+              <div class="item-card-price">
+                <span class="item-card-price-current">¥198</span>
+              </div>
+              <div class="item-card-seller">
+                <div class="item-card-seller-avatar" style="background:linear-gradient(135deg,#6366f1,#4f46e5);"></div>
+                <span class="item-card-seller-name">战术装备店</span>
+              </div>
+            </div>
+          </a>
+          
+          <!-- 道具卡片 15: AKM突擊步槍 -->
+          <a href="item-detail.html?id=AKM突擊步槍&type=guns" class="item-card" data-category="武器皮肤" data-rarity="稀有" data-price="145" data-certified="false" data-bargain="true" data-urgent="true" data-name="AKM突擊步槍" data-seller="AK狂热者">
+            <div class="item-card-image">
+              <img src="picture/guns_AKM突擊步槍.png" alt="AKM突擊步槍" style="width:100%;height:100%;object-fit:contain;background:linear-gradient(135deg,#78350f 0%,#92400e 100%);">
+              <span class="item-card-badge badge-rare">稀有</span>
+            </div>
+            <div class="item-card-content">
+              <div class="item-card-category">武器皮肤 · 步枪</div>
+              <h3 class="item-card-title">AKM 复古木纹</h3>
+              <div class="item-card-price">
+                <span class="item-card-price-current">¥145</span>
+                <span class="item-card-price-old">¥185</span>
+              </div>
+              <div class="item-card-seller">
+                <div class="item-card-seller-avatar" style="background:linear-gradient(135deg,#f97316,#ea580c);"></div>
+                <span class="item-card-seller-name">AK狂热者</span>
+              </div>
+            </div>
+          </a>
+          
+          <!-- 道具卡片 16: 金剛避彈衣 -->
+          <a href="item-detail.html?id=金剛避彈衣&type=protect" class="item-card" data-category="角色外观" data-rarity="传说" data-price="498" data-certified="true" data-bargain="false" data-urgent="false" data-name="金剛避彈衣" data-seller="收藏家协会">
+            <div class="item-card-image">
+              <img src="picture/protect_金剛避彈衣.png" alt="金剛避彈衣" style="width:100%;height:100%;object-fit:contain;background:linear-gradient(135deg,#854d0e 0%,#a16207 100%);">
+              <span class="item-card-badge badge-legendary">传说</span>
+            </div>
+            <div class="item-card-content">
+              <div class="item-card-category">角色外观 · 6级护甲</div>
+              <h3 class="item-card-title">金刚避弹衣</h3>
+              <div class="item-card-price">
+                <span class="item-card-price-current">¥498</span>
+              </div>
+              <div class="item-card-seller">
+                <div class="item-card-seller-avatar" style="background:linear-gradient(135deg,#eab308,#ca8a04);"></div>
+                <span class="item-card-seller-name">收藏家协会</span>
+                <span class="tag tag-success ml-2" style="margin-left:auto;">认证</span>
+              </div>
+            </div>
+          </a>
+          
+          <!-- 道具卡片 17: SVD狙擊步槍 -->
+          <a href="item-detail.html?id=SVD狙擊步槍&type=guns" class="item-card" data-category="武器皮肤" data-rarity="史诗" data-price="228" data-certified="false" data-bargain="false" data-urgent="false" data-name="SVD狙擊步槍" data-seller="射手之魂">
+            <div class="item-card-image">
+              <img src="picture/guns_SVD狙擊步槍.png" alt="SVD狙擊步槍" style="width:100%;height:100%;object-fit:contain;background:linear-gradient(135deg,#14532d 0%,#166534 100%);">
+              <span class="item-card-badge badge-epic">史诗</span>
+            </div>
+            <div class="item-card-content">
+              <div class="item-card-category">武器皮肤 · 射手步枪</div>
+              <h3 class="item-card-title">SVD 经典迷彩</h3>
+              <div class="item-card-price">
+                <span class="item-card-price-current">¥228</span>
+              </div>
+              <div class="item-card-seller">
+                <div class="item-card-seller-avatar" style="background:linear-gradient(135deg,#22c55e,#16a34a);"></div>
+                <span class="item-card-seller-name">射手之魂</span>
+              </div>
+            </div>
+          </a>
+          
+          <!-- 道具卡片 18: 沙漠之鷹 -->
+          <a href="item-detail.html?id=沙漠之鷹&type=guns" class="item-card" data-category="武器皮肤" data-rarity="传说" data-price="358" data-certified="true" data-bargain="false" data-urgent="false" data-name="沙漠之鷹" data-seller="手枪大师">
+            <div class="item-card-image">
+              <img src="picture/guns_沙漠之鷹.png" alt="沙漠之鷹" style="width:100%;height:100%;object-fit:contain;background:linear-gradient(135deg,#854d0e 0%,#a16207 100%);">
+              <span class="item-card-badge badge-legendary">传说</span>
+            </div>
+            <div class="item-card-content">
+              <div class="item-card-category">武器皮肤 · 手枪</div>
+              <h3 class="item-card-title">沙漠之鹰 黄金版</h3>
+              <div class="item-card-price">
+                <span class="item-card-price-current">¥358</span>
+              </div>
+              <div class="item-card-seller">
+                <div class="item-card-seller-avatar" style="background:linear-gradient(135deg,#eab308,#ca8a04);"></div>
+                <span class="item-card-seller-name">手枪大师</span>
+                <span class="tag tag-success ml-2" style="margin-left:auto;">认证</span>
+              </div>
+            </div>
+          </a>
+          
+          <!-- 道具卡片 19: GTO重型戰術包 -->
+          <a href="item-detail.html?id=GTO重型戰術包&type=protect" class="item-card" data-category="配件装饰" data-rarity="传说" data-price="368" data-certified="false" data-bargain="true" data-urgent="false" data-name="GTO重型戰術包" data-seller="户外生存家">
+            <div class="item-card-image">
+              <img src="picture/protect_GTO重型戰術包.png" alt="GTO重型戰術包" style="width:100%;height:100%;object-fit:contain;background:linear-gradient(135deg,#1e3a5f 0%,#0d2137 100%);">
+              <span class="item-card-badge badge-legendary">传说</span>
+            </div>
+            <div class="item-card-content">
+              <div class="item-card-category">配件 · 6级背囊</div>
+              <h3 class="item-card-title">GTO 重型战术包</h3>
+              <div class="item-card-price">
+                <span class="item-card-price-current">¥368</span>
+                <span class="item-card-price-old">¥428</span>
+              </div>
+              <div class="item-card-seller">
+                <div class="item-card-seller-avatar" style="background:linear-gradient(135deg,#22c55e,#16a34a);"></div>
+                <span class="item-card-seller-name">户外生存家</span>
+              </div>
+            </div>
+          </a>
+          
+          <!-- 道具卡片 20: M249輕機槍 -->
+          <a href="item-detail.html?id=M249輕機槍&type=guns" class="item-card" data-category="武器皮肤" data-rarity="史诗" data-price="248" data-certified="true" data-bargain="false" data-urgent="false" data-name="M249輕機槍" data-seller="火力狂人">
+            <div class="item-card-image">
+              <img src="picture/guns_M249輕機槍.png" alt="M249輕機槍" style="width:100%;height:100%;object-fit:contain;background:linear-gradient(135deg,#14532d 0%,#166534 100%);">
+              <span class="item-card-badge badge-epic">史诗</span>
+            </div>
+            <div class="item-card-content">
+              <div class="item-card-category">武器皮肤 · 机枪</div>
+              <h3 class="item-card-title">M249 丛林压制</h3>
+              <div class="item-card-price">
+                <span class="item-card-price-current">¥248</span>
+              </div>
+              <div class="item-card-seller">
+                <div class="item-card-seller-avatar" style="background:linear-gradient(135deg,#22c55e,#16a34a);"></div>
+                <span class="item-card-seller-name">火力狂人</span>
+                <span class="tag tag-success ml-2" style="margin-left:auto;">认证</span>
+              </div>
+            </div>
+          </a>
+          
+          <!-- 道具卡片 21: H70精英頭盔 -->
+          <a href="item-detail.html?id=H70精英頭盔&type=protect" class="item-card" data-category="角色外观" data-rarity="传说" data-price="428" data-certified="false" data-bargain="false" data-urgent="true" data-name="H70精英頭盔" data-seller="头盔收藏家">
+            <div class="item-card-image">
+              <img src="picture/protect_H70精英頭盔.png" alt="H70精英頭盔" style="width:100%;height:100%;object-fit:contain;background:linear-gradient(135deg,#0f3460 0%,#16213e 100%);">
+              <span class="item-card-badge badge-legendary">传说</span>
+            </div>
+            <div class="item-card-content">
+              <div class="item-card-category">角色外观 · 6级头盔</div>
+              <h3 class="item-card-title">H70 精英头盔</h3>
+              <div class="item-card-price">
+                <span class="item-card-price-current">¥428</span>
+              </div>
+              <div class="item-card-seller">
+                <div class="item-card-seller-avatar" style="background:linear-gradient(135deg,#6366f1,#4f46e5);"></div>
+                <span class="item-card-seller-name">头盔收藏家</span>
+              </div>
+            </div>
+          </a>
+          
+          <!-- 道具卡片 22: K416突擊步槍 -->
+          <a href="item-detail.html?id=K416突擊步槍&type=guns" class="item-card" data-category="武器皮肤" data-rarity="史诗" data-price="225" data-certified="true" data-bargain="false" data-urgent="false" data-name="K416突擊步槍" data-seller="精英战士">
+            <div class="item-card-image">
+              <img src="picture/guns_K416突擊步槍.png" alt="K416突擊步槍" style="width:100%;height:100%;object-fit:contain;background:linear-gradient(135deg,#1e3a5f 0%,#0d2137 100%);">
+              <span class="item-card-badge badge-epic">史诗</span>
+            </div>
+            <div class="item-card-content">
+              <div class="item-card-category">武器皮肤 · 步枪</div>
+              <h3 class="item-card-title">K416 战术黑</h3>
+              <div class="item-card-price">
+                <span class="item-card-price-current">¥225</span>
+              </div>
+              <div class="item-card-seller">
+                <div class="item-card-seller-avatar" style="background:linear-gradient(135deg,#3b82f6,#2563eb);"></div>
+                <span class="item-card-seller-name">精英战士</span>
+                <span class="tag tag-success ml-2" style="margin-left:auto;">认证</span>
+              </div>
+            </div>
+          </a>
+          
+          <!-- 道具卡片 23: 特里克MAS2.0裝甲 -->
+          <a href="item-detail.html?id=特里克MAS2.0裝甲&type=protect" class="item-card" data-category="角色外观" data-rarity="传说" data-price="468" data-certified="true" data-bargain="false" data-urgent="false" data-name="特里克MAS2.0裝甲" data-seller="三角洲老兵">
+            <div class="item-card-image">
+              <img src="picture/protect_特里克MAS2.0裝甲.png" alt="特里克MAS2.0装甲" style="width:100%;height:100%;object-fit:contain;background:linear-gradient(135deg,#0f3460 0%,#16213e 100%);">
+              <span class="item-card-badge badge-legendary">传说</span>
+            </div>
+            <div class="item-card-content">
+              <div class="item-card-category">角色外观 · 6级护甲</div>
+              <h3 class="item-card-title">特里克MAS2.0装甲</h3>
+              <div class="item-card-price">
+                <span class="item-card-price-current">¥468</span>
+              </div>
+              <div class="item-card-seller">
+                <div class="item-card-seller-avatar" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed);"></div>
+                <span class="item-card-seller-name">三角洲老兵</span>
+                <span class="tag tag-success ml-2" style="margin-left:auto;">认证</span>
+              </div>
+            </div>
+          </a>
+          
+          <!-- 道具卡片 24: PKM通用機槍 -->
+          <a href="item-detail.html?id=PKM通用機槍&type=guns" class="item-card" data-category="武器皮肤" data-rarity="稀有" data-price="168" data-certified="false" data-bargain="true" data-urgent="false" data-name="PKM通用機槍" data-seller="重火力爱好者">
+            <div class="item-card-image">
+              <img src="picture/guns_PKM通用機槍.png" alt="PKM通用機槍" style="width:100%;height:100%;object-fit:contain;background:linear-gradient(135deg,#78350f 0%,#92400e 100%);">
+              <span class="item-card-badge badge-rare">稀有</span>
+            </div>
+            <div class="item-card-content">
+              <div class="item-card-category">武器皮肤 · 机枪</div>
+              <h3 class="item-card-title">PKM 军绿涂装</h3>
+              <div class="item-card-price">
+                <span class="item-card-price-current">¥168</span>
+                <span class="item-card-price-old">¥208</span>
+              </div>
+              <div class="item-card-seller">
+                <div class="item-card-seller-avatar" style="background:linear-gradient(135deg,#f97316,#ea580c);"></div>
+                <span class="item-card-seller-name">重火力爱好者</span>
+              </div>
+            </div>
+          </a>
+          
+          <!-- 道具卡片 25: ALS揹負系統 -->
+          <a href="item-detail.html?id=ALS揹負系統&type=protect" class="item-card" data-category="配件装饰" data-rarity="史诗" data-price="218" data-certified="false" data-bargain="false" data-urgent="false" data-name="ALS揹負系統" data-seller="背包客联盟">
+            <div class="item-card-image">
+              <img src="picture/protect_ALS揹負系統.png" alt="ALS揹負系统" style="width:100%;height:100%;object-fit:contain;background:linear-gradient(135deg,#1e3a5f 0%,#0d2137 100%);">
+              <span class="item-card-badge badge-epic">史诗</span>
+            </div>
+            <div class="item-card-content">
+              <div class="item-card-category">配件 · 5级背囊</div>
+              <h3 class="item-card-title">ALS 背负系统</h3>
+              <div class="item-card-price">
+                <span class="item-card-price-current">¥218</span>
+              </div>
+              <div class="item-card-seller">
+                <div class="item-card-seller-avatar" style="background:linear-gradient(135deg,#6366f1,#4f46e5);"></div>
+                <span class="item-card-seller-name">背包客联盟</span>
+              </div>
+            </div>
+          </a>
+          
+          <!-- 道具卡片 26: G17 -->
+          <a href="item-detail.html?id=G17&type=guns" class="item-card" data-category="武器皮肤" data-rarity="普通" data-price="68" data-certified="false" data-bargain="true" data-urgent="true" data-name="G17" data-seller="入门玩家">
+            <div class="item-card-image">
+              <img src="picture/guns_G17.png" alt="G17" style="width:100%;height:100%;object-fit:contain;background:linear-gradient(135deg,#78716c 0%,#57534e 100%);">
+              <span class="item-card-badge badge-common">普通</span>
+            </div>
+            <div class="item-card-content">
+              <div class="item-card-category">武器皮肤 · 手枪</div>
+              <h3 class="item-card-title">G17 标准版</h3>
+              <div class="item-card-price">
+                <span class="item-card-price-current">¥68</span>
+                <span class="item-card-price-old">¥98</span>
+              </div>
+              <div class="item-card-seller">
+                <div class="item-card-seller-avatar" style="background:linear-gradient(135deg,#a8a29e,#78716c);"></div>
+                <span class="item-card-seller-name">入门玩家</span>
+              </div>
+            </div>
+          </a>
+          
+          <!-- 道具卡片 27: Mask-1鐵壁頭盔 -->
+          <a href="item-detail.html?id=Mask-1鐵壁頭盔&type=protect" class="item-card" data-category="角色外观" data-rarity="史诗" data-price="248" data-certified="true" data-bargain="false" data-urgent="false" data-name="Mask-1鐵壁頭盔" data-seller="防具专家">
+            <div class="item-card-image">
+              <img src="picture/protect_Mask-1鐵壁頭盔.png" alt="Mask-1鐵壁頭盔" style="width:100%;height:100%;object-fit:contain;background:linear-gradient(135deg,#0f3460 0%,#16213e 100%);">
+              <span class="item-card-badge badge-epic">史诗</span>
+            </div>
+            <div class="item-card-content">
+              <div class="item-card-category">角色外观 · 5级头盔</div>
+              <h3 class="item-card-title">Mask-1 铁壁头盔</h3>
+              <div class="item-card-price">
+                <span class="item-card-price-current">¥248</span>
+              </div>
+              <div class="item-card-seller">
+                <div class="item-card-seller-avatar" style="background:linear-gradient(135deg,#3b82f6,#2563eb);"></div>
+                <span class="item-card-seller-name">防具专家</span>
+                <span class="tag tag-success ml-2" style="margin-left:auto;">认证</span>
+              </div>
+            </div>
+          </a>
+          
+          <!-- 道具卡片 28: UZI衝鋒槍 -->
+          <a href="item-detail.html?id=UZI衝鋒槍&type=guns" class="item-card" data-category="武器皮肤" data-rarity="稀有" data-price="118" data-certified="false" data-bargain="false" data-urgent="false" data-name="UZI衝鋒槍" data-seller="复古武器迷">
+            <div class="item-card-image">
+              <img src="picture/guns_UZI衝鋒槍.png" alt="UZI衝鋒槍" style="width:100%;height:100%;object-fit:contain;background:linear-gradient(135deg,#78716c 0%,#57534e 100%);">
+              <span class="item-card-badge badge-rare">稀有</span>
+            </div>
+            <div class="item-card-content">
+              <div class="item-card-category">武器皮肤 · 冲锋枪</div>
+              <h3 class="item-card-title">UZI 经典黑</h3>
+              <div class="item-card-price">
+                <span class="item-card-price-current">¥118</span>
+              </div>
+              <div class="item-card-seller">
+                <div class="item-card-seller-avatar" style="background:linear-gradient(135deg,#78716c,#57534e);"></div>
+                <span class="item-card-seller-name">复古武器迷</span>
+              </div>
+            </div>
+          </a>
+          
+          <!-- 道具卡片 29: DAR突擊手胸掛 -->
+          <a href="item-detail.html?id=DAR突擊手胸掛&type=protect" class="item-card" data-category="配件装饰" data-rarity="史诗" data-price="208" data-certified="false" data-bargain="true" data-urgent="false" data-name="DAR突擊手胸掛" data-seller="战术配件店">
+            <div class="item-card-image">
+              <img src="picture/protect_DAR突擊手胸掛.png" alt="DAR突擊手胸掛" style="width:100%;height:100%;object-fit:contain;background:linear-gradient(135deg,#1e3a5f 0%,#0d2137 100%);">
+              <span class="item-card-badge badge-epic">史诗</span>
+            </div>
+            <div class="item-card-content">
+              <div class="item-card-category">配件 · 5级胸挂</div>
+              <h3 class="item-card-title">DAR 突击手胸挂</h3>
+              <div class="item-card-price">
+                <span class="item-card-price-current">¥208</span>
+                <span class="item-card-price-old">¥258</span>
+              </div>
+              <div class="item-card-seller">
+                <div class="item-card-seller-avatar" style="background:linear-gradient(135deg,#6366f1,#4f46e5);"></div>
+                <span class="item-card-seller-name">战术配件店</span>
+              </div>
+            </div>
+          </a>
+          
+          <!-- 道具卡片 30: 191式突擊步槍 -->
+          <a href="item-detail.html?id=191式突擊步槍&type=guns" class="item-card" data-category="武器皮肤" data-rarity="史诗" data-price="238" data-certified="true" data-bargain="false" data-urgent="false" data-name="191式突擊步槍" data-seller="国产武器迷">
+            <div class="item-card-image">
+              <img src="picture/guns_191式突擊步槍.png" alt="191式突擊步槍" style="width:100%;height:100%;object-fit:contain;background:linear-gradient(135deg,#14532d 0%,#166534 100%);">
+              <span class="item-card-badge badge-epic">史诗</span>
+            </div>
+            <div class="item-card-content">
+              <div class="item-card-category">武器皮肤 · 步枪</div>
+              <h3 class="item-card-title">191式 战术绿</h3>
+              <div class="item-card-price">
+                <span class="item-card-price-current">¥238</span>
+              </div>
+              <div class="item-card-seller">
+                <div class="item-card-seller-avatar" style="background:linear-gradient(135deg,#22c55e,#16a34a);"></div>
+                <span class="item-card-seller-name">国产武器迷</span>
+                <span class="tag tag-success ml-2" style="margin-left:auto;">认证</span>
+              </div>
+            </div>
+          </a>
+        </div>
+        
+        <!-- 空状态 (初始隐藏) -->
+        <div class="empty-state" id="emptyState" style="display: none;">
+          <div class="empty-state-icon">🔍</div>
+          <h3 class="empty-state-title">未找到相关道具</h3>
+          <p class="empty-state-description" id="emptyStateText">没有找到符合条件的道具，试试调整筛选条件</p>
+          <button class="btn btn-primary" onclick="resetFilters()">重置筛选</button>
+        </div>
+        
+        <!-- 分页 -->
+        <div class="pagination mt-8" id="pagination">
+          <button class="pagination-item" id="prevPage" onclick="changePage(-1)">‹</button>
+          <button class="pagination-item active" data-page="1" onclick="goToPage(1)">1</button>
+          <button class="pagination-item" data-page="2" onclick="goToPage(2)">2</button>
+          <button class="pagination-item" data-page="3" onclick="goToPage(3)">3</button>
+          <button class="pagination-item" data-page="4" onclick="goToPage(4)">4</button>
+          <button class="pagination-item" data-page="5" onclick="goToPage(5)">5</button>
+          <button class="pagination-item" id="nextPage" onclick="changePage(1)">›</button>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- 页脚 -->
+  <footer class="footer mt-8">
+    <div class="container">
+      <div class="footer-bottom" style="margin-top:0;padding-top:0;border-top:none;">
+        <p>© 2024 三角洲交易. 保留所有权利。</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/theme.js"></script>
+  <script>
+    // ========== 全局状态 ==========
+    const state = {
+      currentPage: 1,
+      itemsPerPage: 9,
+      selectedCategory: '全部道具',
+      selectedRarities: [],
+      priceMin: null,
+      priceMax: null,
+      certifiedOnly: false,
+      bargainOnly: false,
+      urgentOnly: false,
+      searchKeyword: ''
+    };
+    
+    // ========== DOM 元素 ==========
+    const itemsGrid = document.getElementById('itemsGrid');
+    const emptyState = document.getElementById('emptyState');
+    const resultsCount = document.querySelector('.results-count strong');
+    const allItems = Array.from(itemsGrid.querySelectorAll('.item-card'));
+    
+    // ========== 分类筛选 ==========
+    document.querySelectorAll('.category-item').forEach(item => {
+      item.addEventListener('click', function() {
+        document.querySelectorAll('.category-item').forEach(i => i.classList.remove('active'));
+        this.classList.add('active');
+        state.selectedCategory = this.querySelector('span:first-child').textContent;
+        state.currentPage = 1;
+        applyFilters();
+      });
+    });
+    
+    // ========== 稀有度筛选 ==========
+    document.querySelectorAll('.sidebar-section:nth-child(3) input[type="checkbox"]').forEach((checkbox, index) => {
+      const rarities = ['传说', '史诗', '稀有', '普通'];
+      checkbox.addEventListener('change', function() {
+        if (this.checked) {
+          state.selectedRarities.push(rarities[index]);
+        } else {
+          state.selectedRarities = state.selectedRarities.filter(r => r !== rarities[index]);
+        }
+        state.currentPage = 1;
+        applyFilters();
+      });
+    });
+    
+    // ========== 其他筛选 ==========
+    document.querySelectorAll('.sidebar-section:nth-child(4) input[type="checkbox"]').forEach((checkbox, index) => {
+      checkbox.addEventListener('change', function() {
+        if (index === 0) state.certifiedOnly = this.checked;
+        if (index === 1) state.bargainOnly = this.checked;
+        if (index === 2) state.urgentOnly = this.checked;
+        state.currentPage = 1;
+        applyFilters();
+      });
+    });
+    
+    // ========== 价格筛选 ==========
+    document.querySelector('.sidebar-section:nth-child(2) .btn').addEventListener('click', function() {
+      const inputs = document.querySelectorAll('.price-input');
+      state.priceMin = inputs[0].value ? parseFloat(inputs[0].value) : null;
+      state.priceMax = inputs[1].value ? parseFloat(inputs[1].value) : null;
+      state.currentPage = 1;
+      applyFilters();
+    });
+    
+    // ========== 搜索功能 ==========
+    function handleSearchKeypress(event) {
+      if (event.key === 'Enter') {
+        const keyword = document.getElementById('searchInput').value.trim();
+        state.searchKeyword = keyword;
+        state.currentPage = 1;
+        applyFilters();
+      }
+    }
+    
+    // ========== 核心筛选逻辑 ==========
+    function applyFilters() {
+      let filteredItems = allItems.filter(item => {
+        const category = item.dataset.category;
+        const rarity = item.dataset.rarity;
+        const price = parseFloat(item.dataset.price);
+        const certified = item.dataset.certified === 'true';
+        const bargain = item.dataset.bargain === 'true';
+        const urgent = item.dataset.urgent === 'true';
+        const name = item.dataset.name.toLowerCase();
+        const seller = item.dataset.seller.toLowerCase();
+        
+        // 分类筛选
+        if (state.selectedCategory !== '全部道具' && !category.includes(state.selectedCategory.replace('装饰', ''))) {
+          return false;
+        }
+        
+        // 稀有度筛选
+        if (state.selectedRarities.length > 0 && !state.selectedRarities.includes(rarity)) {
+          return false;
+        }
+        
+        // 价格筛选
+        if (state.priceMin !== null && price < state.priceMin) return false;
+        if (state.priceMax !== null && price > state.priceMax) return false;
+        
+        // 其他筛选
+        if (state.certifiedOnly && !certified) return false;
+        if (state.bargainOnly && !bargain) return false;
+        if (state.urgentOnly && !urgent) return false;
+        
+        // 搜索关键词
+        if (state.searchKeyword) {
+          const keyword = state.searchKeyword.toLowerCase();
+          if (!name.includes(keyword) && !seller.includes(keyword) && !category.toLowerCase().includes(keyword)) {
+            return false;
+          }
+        }
+        
+        return true;
+      });
+      
+      // 更新结果计数
+      resultsCount.textContent = filteredItems.length;
+      
+      // 分页
+      const totalPages = Math.ceil(filteredItems.length / state.itemsPerPage) || 1;
+      const startIndex = (state.currentPage - 1) * state.itemsPerPage;
+      const endIndex = startIndex + state.itemsPerPage;
+      const pageItems = filteredItems.slice(startIndex, endIndex);
+      
+      // 显示/隐藏道具
+      allItems.forEach(item => item.style.display = 'none');
+      pageItems.forEach(item => {
+        item.style.display = '';
+        item.style.animation = 'fadeIn 0.3s ease';
+      });
+      
+      // 空状态
+      if (filteredItems.length === 0) {
+        emptyState.style.display = '';
+        if (state.searchKeyword) {
+          document.getElementById('emptyStateText').textContent = `没有找到与 "${state.searchKeyword}" 相关的道具`;
+        } else {
+          document.getElementById('emptyStateText').textContent = '没有找到符合条件的道具，试试调整筛选条件';
+        }
+      } else {
+        emptyState.style.display = 'none';
+      }
+      
+      // 更新分页
+      updatePagination(totalPages);
+    }
+    
+    // ========== 分页控制 ==========
+    function updatePagination(totalPages) {
+      const pagination = document.getElementById('pagination');
+      const pageButtons = pagination.querySelectorAll('[data-page]');
+      
+      pageButtons.forEach((btn, index) => {
+        const pageNum = index + 1;
+        if (pageNum <= totalPages) {
+          btn.style.display = '';
+          btn.classList.toggle('active', pageNum === state.currentPage);
+        } else {
+          btn.style.display = 'none';
+        }
+      });
+      
+      // 更新上一页/下一页按钮状态
+      document.getElementById('prevPage').disabled = state.currentPage === 1;
+      document.getElementById('nextPage').disabled = state.currentPage === totalPages;
+    }
+    
+    function goToPage(page) {
+      state.currentPage = page;
+      applyFilters();
+      window.scrollTo({ top: 300, behavior: 'smooth' });
+    }
+    
+    function changePage(delta) {
+      const newPage = state.currentPage + delta;
+      if (newPage >= 1) {
+        state.currentPage = newPage;
+        applyFilters();
+        window.scrollTo({ top: 300, behavior: 'smooth' });
+      }
+    }
+    
+    // ========== 重置筛选 ==========
+    function resetFilters() {
+      state.selectedCategory = '全部道具';
+      state.selectedRarities = [];
+      state.priceMin = null;
+      state.priceMax = null;
+      state.certifiedOnly = false;
+      state.bargainOnly = false;
+      state.urgentOnly = false;
+      state.searchKeyword = '';
+      state.currentPage = 1;
+      
+      // 重置UI
+      document.querySelectorAll('.category-item').forEach((item, i) => {
+        item.classList.toggle('active', i === 0);
+      });
+      document.querySelectorAll('.checkbox-group input').forEach(cb => cb.checked = false);
+      document.querySelectorAll('.price-input').forEach(input => input.value = '');
+      document.getElementById('searchInput').value = '';
+      
+      applyFilters();
+    }
+    
+    // ========== 排序功能 ==========
+    document.querySelector('.sort-select').addEventListener('change', function() {
+      const sortType = this.value;
+      const items = Array.from(itemsGrid.querySelectorAll('.item-card'));
+      
+      items.sort((a, b) => {
+        const priceA = parseFloat(a.dataset.price);
+        const priceB = parseFloat(b.dataset.price);
+        
+        switch(sortType) {
+          case '价格从低到高': return priceA - priceB;
+          case '价格从高到低': return priceB - priceA;
+          default: return 0;
+        }
+      });
+      
+      items.forEach(item => itemsGrid.appendChild(item));
+      applyFilters();
+    });
+    
+    // ========== 初始化 ==========
+    applyFilters();
+    
+    // 添加淡入动画
+    if (!document.getElementById('marketplace-animations')) {
+      const style = document.createElement('style');
+      style.id = 'marketplace-animations';
+      style.textContent = `
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .item-card { text-decoration: none; color: inherit; display: block; }
+        .item-card:hover { transform: translateY(-4px); }
+        .pagination-item:disabled { opacity: 0.5; cursor: not-allowed; }
+      `;
+      document.head.appendChild(style);
+    }
+  </script>
+</body>
+</html>

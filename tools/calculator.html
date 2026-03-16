@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="三角洲行动伤害计算器 - 精确计算不同距离、护甲、部位的伤害数值">
+  <title>伤害计算器 - 三角洲交易</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../css/design-system.css">
+  <link rel="stylesheet" href="../css/components.css">
+  
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('delta-trade-theme');
+      if (savedTheme && savedTheme !== 'system') {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      }
+    })();
+  </script>
+  
+  <style>
+    .tools-header {
+      background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+      padding: var(--space-12) 0;
+      border-bottom: 1px solid var(--border-primary);
+    }
+    
+    .tools-header-content {
+      max-width: 700px;
+    }
+    
+    .tools-header h1 {
+      font-size: var(--text-3xl);
+      margin-bottom: var(--space-4);
+    }
+    
+    .tools-header p {
+      font-size: var(--text-lg);
+      color: var(--text-secondary);
+      margin-bottom: 0;
+    }
+    
+    .calculator-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-8);
+      padding: var(--space-8) 0;
+    }
+    
+    @media (max-width: 1024px) {
+      .calculator-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .calc-section {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+    }
+    
+    .calc-section-title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      margin-bottom: var(--space-5);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    
+    .calc-row {
+      margin-bottom: var(--space-5);
+    }
+    
+    .calc-label {
+      display: block;
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-2);
+    }
+    
+    .calc-select {
+      width: 100%;
+      padding: var(--space-3) var(--space-4);
+      font-size: var(--text-base);
+      color: var(--text-primary);
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+    }
+    
+    .calc-select:focus {
+      outline: none;
+      border-color: var(--primary-500);
+    }
+    
+    .range-slider {
+      width: 100%;
+      height: 8px;
+      background-color: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      appearance: none;
+      cursor: pointer;
+    }
+    
+    .range-slider::-webkit-slider-thumb {
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      background: var(--primary-500);
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    
+    .range-value {
+      display: flex;
+      justify-content: space-between;
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+      margin-top: var(--space-2);
+    }
+    
+    .range-current {
+      font-weight: 600;
+      color: var(--primary-500);
+    }
+    
+    .hit-location-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-2);
+    }
+    
+    .hit-location-btn {
+      padding: var(--space-3);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-secondary);
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    
+    .hit-location-btn:hover {
+      background-color: var(--bg-hover);
+      color: var(--text-primary);
+    }
+    
+    .hit-location-btn.active {
+      background-color: var(--primary-500);
+      border-color: var(--primary-500);
+      color: var(--text-inverse);
+    }
+    
+    .result-card {
+      background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-800) 100%);
+      border-radius: var(--radius-xl);
+      padding: var(--space-8);
+      text-align: center;
+      color: white;
+    }
+    
+    .result-label {
+      font-size: var(--text-sm);
+      opacity: 0.9;
+      margin-bottom: var(--space-2);
+    }
+    
+    .result-value {
+      font-size: var(--text-5xl);
+      font-weight: 800;
+      margin-bottom: var(--space-2);
+    }
+    
+    .result-subtitle {
+      font-size: var(--text-sm);
+      opacity: 0.8;
+    }
+    
+    .result-details {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-4);
+      margin-top: var(--space-6);
+      padding-top: var(--space-6);
+      border-top: 1px solid rgba(255,255,255,0.2);
+    }
+    
+    .result-detail {
+      text-align: center;
+    }
+    
+    .result-detail-value {
+      font-size: var(--text-xl);
+      font-weight: 700;
+      margin-bottom: var(--space-1);
+    }
+    
+    .result-detail-label {
+      font-size: var(--text-xs);
+      opacity: 0.8;
+    }
+    
+    .weapon-preview {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-4);
+      background-color: var(--bg-secondary);
+      border-radius: var(--radius-lg);
+      margin-top: var(--space-4);
+    }
+    
+    .weapon-preview-icon {
+      width: 60px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+    
+    .weapon-preview-info {
+      flex: 1;
+    }
+    
+    .weapon-preview-name {
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: var(--space-1);
+    }
+    
+    .weapon-preview-stats {
+      font-size: var(--text-xs);
+      color: var(--text-tertiary);
+    }
+  </style>
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a href="../index.html" class="navbar-brand">
+        <img src="https://buff.163.com/static/images/site/logo.png" alt="BUFF" style="height:28px;" class="logo-dark">
+        <img src="../images/buff-logo-dark.png" alt="BUFF" style="height:28px;" class="logo-light">
+        <span>三角洲交易</span>
+      </a>
+      
+      <ul class="navbar-nav hide-mobile">
+        <li><a href="../index.html" class="navbar-link">首页</a></li>
+        <li><a href="../marketplace.html" class="navbar-link">道具市场</a></li>
+        <li><a href="weapons.html" class="navbar-link">武器数据库</a></li>
+        <li><a href="guides.html" class="navbar-link">攻略中心</a></li>
+      </ul>
+      
+      <div class="navbar-actions">
+        <div class="theme-toggle hide-mobile" role="radiogroup" aria-label="主题选择">
+          <button class="theme-toggle-option" data-theme="light" role="radio">☀️</button>
+          <button class="theme-toggle-option active" data-theme="dark" role="radio">🌙</button>
+        </div>
+        <a href="../auth/login.html" class="btn btn-secondary btn-sm hide-mobile">登录</a>
+        <a href="../auth/register.html" class="btn btn-primary btn-sm">免费注册</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 工具头部 -->
+  <section class="tools-header">
+    <div class="container">
+      <div class="tools-header-content">
+        <h1>🧮 伤害计算器</h1>
+        <p>精确计算不同距离、护甲、部位的伤害数值，帮你选择最佳配装方案，了解击杀所需子弹数。</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="calculator-layout">
+      <!-- 输入区域 -->
+      <div>
+        <div class="calc-section">
+          <h2 class="calc-section-title">🔫 武器选择</h2>
+          
+          <div class="calc-row">
+            <label class="calc-label">武器类型</label>
+            <select class="calc-select" id="weaponType">
+              <option value="ar">突击步枪</option>
+              <option value="smg">冲锋枪</option>
+              <option value="sr">狙击步枪</option>
+              <option value="lmg">轻机枪</option>
+              <option value="sg">霰弹枪</option>
+              <option value="dmr">精确射手步枪</option>
+            </select>
+          </div>
+          
+          <div class="calc-row">
+            <label class="calc-label">武器</label>
+            <select class="calc-select" id="weapon">
+              <option value="ak47">AK-47 (伤害: 47)</option>
+              <option value="m4a1">M4A1 (伤害: 38)</option>
+              <option value="scarh">SCAR-H (伤害: 52)</option>
+              <option value="hk416">HK416 (伤害: 40)</option>
+              <option value="ace32">ACE 32 (伤害: 36)</option>
+            </select>
+          </div>
+          
+          <div class="weapon-preview">
+            <div class="weapon-preview-icon">🔫</div>
+            <div class="weapon-preview-info">
+              <div class="weapon-preview-name">AK-47</div>
+              <div class="weapon-preview-stats">基础伤害: 47 | 射速: 600 | 弹匣: 30</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="calc-section" style="margin-top: var(--space-6);">
+          <h2 class="calc-section-title">🎯 战斗参数</h2>
+          
+          <div class="calc-row">
+            <label class="calc-label">射击距离</label>
+            <input type="range" class="range-slider" id="distance" min="0" max="100" value="20">
+            <div class="range-value">
+              <span>0m</span>
+              <span class="range-current" id="distanceValue">20m</span>
+              <span>100m</span>
+            </div>
+          </div>
+          
+          <div class="calc-row">
+            <label class="calc-label">命中部位</label>
+            <div class="hit-location-grid">
+              <button class="hit-location-btn active" data-location="head">🎯 头部</button>
+              <button class="hit-location-btn" data-location="chest">👕 胸部</button>
+              <button class="hit-location-btn" data-location="stomach">🎽 腹部</button>
+              <button class="hit-location-btn" data-location="arm">💪 手臂</button>
+              <button class="hit-location-btn" data-location="leg">🦵 腿部</button>
+              <button class="hit-location-btn" data-location="foot">🦶 脚部</button>
+            </div>
+          </div>
+          
+          <div class="calc-row">
+            <label class="calc-label">敌方护甲等级</label>
+            <select class="calc-select" id="armor">
+              <option value="0">无护甲</option>
+              <option value="1">1级护甲 (减伤 20%)</option>
+              <option value="2" selected>2级护甲 (减伤 35%)</option>
+              <option value="3">3级护甲 (减伤 50%)</option>
+            </select>
+          </div>
+          
+          <div class="calc-row">
+            <label class="calc-label">敌方生命值</label>
+            <input type="range" class="range-slider" id="health" min="1" max="150" value="100">
+            <div class="range-value">
+              <span>1</span>
+              <span class="range-current" id="healthValue">100</span>
+              <span>150</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 结果区域 -->
+      <div>
+        <div class="result-card">
+          <div class="result-label">单发伤害</div>
+          <div class="result-value" id="damageResult">94</div>
+          <div class="result-subtitle">头部 · 2级护甲 · 20m</div>
+          
+          <div class="result-details">
+            <div class="result-detail">
+              <div class="result-detail-value" id="bulletsToKill">2</div>
+              <div class="result-detail-label">击杀所需子弹</div>
+            </div>
+            <div class="result-detail">
+              <div class="result-detail-value" id="ttk">0.2s</div>
+              <div class="result-detail-label">击杀时间 (TTK)</div>
+            </div>
+            <div class="result-detail">
+              <div class="result-detail-value" id="damageMultiplier">2.0x</div>
+              <div class="result-detail-label">部位倍率</div>
+            </div>
+            <div class="result-detail">
+              <div class="result-detail-value" id="armorReduction">-35%</div>
+              <div class="result-detail-label">护甲减伤</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="calc-section" style="margin-top: var(--space-6);">
+          <h2 class="calc-section-title">📊 伤害对比</h2>
+          <p class="text-secondary text-sm mb-4">不同部位的伤害对比（当前配置）</p>
+          
+          <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+            <div style="display: flex; align-items: center; gap: var(--space-3);">
+              <span style="width: 60px; font-size: var(--text-sm); color: var(--text-secondary);">头部</span>
+              <div style="flex: 1; height: 24px; background: var(--bg-tertiary); border-radius: var(--radius-full); overflow: hidden;">
+                <div style="width: 94%; height: 100%; background: linear-gradient(90deg, var(--danger-500), var(--accent-500)); border-radius: var(--radius-full);"></div>
+              </div>
+              <span style="width: 40px; text-align: right; font-weight: 600; font-size: var(--text-sm);">94</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: var(--space-3);">
+              <span style="width: 60px; font-size: var(--text-sm); color: var(--text-secondary);">胸部</span>
+              <div style="flex: 1; height: 24px; background: var(--bg-tertiary); border-radius: var(--radius-full); overflow: hidden;">
+                <div style="width: 47%; height: 100%; background: linear-gradient(90deg, var(--primary-500), var(--primary-400)); border-radius: var(--radius-full);"></div>
+              </div>
+              <span style="width: 40px; text-align: right; font-weight: 600; font-size: var(--text-sm);">47</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: var(--space-3);">
+              <span style="width: 60px; font-size: var(--text-sm); color: var(--text-secondary);">腹部</span>
+              <div style="flex: 1; height: 24px; background: var(--bg-tertiary); border-radius: var(--radius-full); overflow: hidden;">
+                <div style="width: 42%; height: 100%; background: linear-gradient(90deg, var(--success-500), var(--success-600)); border-radius: var(--radius-full);"></div>
+              </div>
+              <span style="width: 40px; text-align: right; font-weight: 600; font-size: var(--text-sm);">42</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: var(--space-3);">
+              <span style="width: 60px; font-size: var(--text-sm); color: var(--text-secondary);">四肢</span>
+              <div style="flex: 1; height: 24px; background: var(--bg-tertiary); border-radius: var(--radius-full); overflow: hidden;">
+                <div style="width: 35%; height: 100%; background: linear-gradient(90deg, #8b5cf6, #a855f7); border-radius: var(--radius-full);"></div>
+              </div>
+              <span style="width: 40px; text-align: right; font-weight: 600; font-size: var(--text-sm);">35</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 页脚 -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom" style="margin-top:0;padding-top:0;border-top:none;">
+        <p>© 2024 三角洲交易. 保留所有权利。</p>
+        <p class="mt-2" style="font-size: 12px;">伤害数据仅供参考，具体数值以游戏内为准。</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/theme.js"></script>
+  <script>
+    // 部位选择
+    document.querySelectorAll('.hit-location-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.hit-location-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        calculateDamage();
+      });
+    });
+    
+    // 距离滑块
+    document.getElementById('distance').addEventListener('input', function() {
+      document.getElementById('distanceValue').textContent = this.value + 'm';
+      calculateDamage();
+    });
+    
+    // 生命值滑块
+    document.getElementById('health').addEventListener('input', function() {
+      document.getElementById('healthValue').textContent = this.value;
+      calculateDamage();
+    });
+    
+    // 简单的伤害计算演示
+    function calculateDamage() {
+      const baseDamage = 47; // AK-47 base damage
+      const location = document.querySelector('.hit-location-btn.active').dataset.location;
+      const armor = parseInt(document.getElementById('armor').value);
+      const health = parseInt(document.getElementById('health').value);
+      
+      // 部位倍率
+      const multipliers = {
+        head: 2.0,
+        chest: 1.0,
+        stomach: 0.9,
+        arm: 0.75,
+        leg: 0.75,
+        foot: 0.5
+      };
+      
+      // 护甲减伤
+      const armorReduction = [0, 0.20, 0.35, 0.50];
+      
+      const multiplier = multipliers[location] || 1.0;
+      const reduction = armorReduction[armor] || 0;
+      
+      const damage = Math.round(baseDamage * multiplier * (1 - reduction));
+      const bulletsToKill = Math.ceil(health / damage);
+      const ttk = ((bulletsToKill - 1) * 0.1).toFixed(1);
+      
+      document.getElementById('damageResult').textContent = damage;
+      document.getElementById('bulletsToKill').textContent = bulletsToKill;
+      document.getElementById('ttk').textContent = ttk + 's';
+      document.getElementById('damageMultiplier').textContent = multiplier.toFixed(1) + 'x';
+      document.getElementById('armorReduction').textContent = '-' + Math.round(reduction * 100) + '%';
+    }
+    
+    // 初始计算
+    calculateDamage();
+  </script>
+</body>
+</html>

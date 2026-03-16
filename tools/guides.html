@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="三角洲行动攻略中心 - 最全的游戏攻略、武器数据、战术教学">
+  <title>攻略中心 - 三角洲交易</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../css/design-system.css">
+  <link rel="stylesheet" href="../css/components.css">
+  
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('delta-trade-theme');
+      if (savedTheme && savedTheme !== 'system') {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      }
+    })();
+  </script>
+  
+  <style>
+    .guides-header {
+      background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+      padding: var(--space-12) 0;
+      border-bottom: 1px solid var(--border-primary);
+    }
+    
+    .guides-header h1 {
+      font-size: var(--text-3xl);
+      margin-bottom: var(--space-4);
+    }
+    
+    .guides-header p {
+      font-size: var(--text-lg);
+      color: var(--text-secondary);
+      max-width: 600px;
+    }
+    
+    .guides-tabs {
+      display: flex;
+      gap: var(--space-2);
+      margin-top: var(--space-6);
+      flex-wrap: wrap;
+    }
+    
+    .guides-tab {
+      padding: var(--space-2) var(--space-4);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-secondary);
+      background-color: transparent;
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    
+    .guides-tab:hover {
+      background-color: var(--bg-hover);
+      color: var(--text-primary);
+    }
+    
+    .guides-tab.active {
+      background-color: var(--primary-500);
+      border-color: var(--primary-500);
+      color: white;
+    }
+    
+    .guides-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-6);
+      padding: var(--space-8) 0;
+    }
+    
+    @media (max-width: 1024px) {
+      .guides-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (max-width: 640px) {
+      .guides-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .guide-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      transition: all var(--transition-normal);
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    
+    .guide-card:hover {
+      border-color: var(--primary-400);
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-4px);
+      color: inherit;
+    }
+    
+    .guide-card-image {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      overflow: hidden;
+    }
+    
+    .guide-card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .guide-card-tag {
+      position: absolute;
+      top: var(--space-3);
+      left: var(--space-3);
+      padding: var(--space-1) var(--space-3);
+      background-color: var(--primary-500);
+      color: white;
+      font-size: var(--text-xs);
+      font-weight: 600;
+      border-radius: var(--radius-full);
+    }
+    
+    .guide-card-tag.hot {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+    }
+    
+    .guide-card-tag.new {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+    }
+    
+    .guide-card-content {
+      padding: var(--space-5);
+    }
+    
+    .guide-card-category {
+      font-size: var(--text-xs);
+      color: var(--text-tertiary);
+      margin-bottom: var(--space-2);
+    }
+    
+    .guide-card-title {
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: var(--space-3);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.5;
+    }
+    
+    .guide-card-desc {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      margin-bottom: var(--space-4);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.6;
+    }
+    
+    .guide-card-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: var(--text-xs);
+      color: var(--text-tertiary);
+    }
+    
+    .guide-card-stats {
+      display: flex;
+      gap: var(--space-3);
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: var(--space-16) var(--space-8);
+      grid-column: 1 / -1;
+    }
+    
+    .empty-state-icon {
+      font-size: 4rem;
+      margin-bottom: var(--space-4);
+    }
+  </style>
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a href="../index.html" class="navbar-brand">
+        <img src="https://buff.163.com/static/images/site/logo.png" alt="BUFF" style="height:28px;" class="logo-dark">
+        <img src="../images/buff-logo-dark.png" alt="BUFF" style="height:28px;" class="logo-light">
+        <span>三角洲交易</span>
+      </a>
+      
+      <ul class="navbar-nav hide-mobile">
+        <li><a href="../index.html" class="navbar-link">首页</a></li>
+        <li><a href="../marketplace.html" class="navbar-link">道具市场</a></li>
+        <li><a href="weapons.html" class="navbar-link">武器数据库</a></li>
+        <li><a href="guides.html" class="navbar-link active">攻略中心</a></li>
+      </ul>
+      
+      <div class="navbar-actions">
+        <div class="theme-toggle hide-mobile" role="radiogroup" aria-label="主题选择">
+          <button class="theme-toggle-option" data-theme="light" role="radio">☀️</button>
+          <button class="theme-toggle-option active" data-theme="dark" role="radio">🌙</button>
+        </div>
+        <a href="../auth/login.html" class="btn btn-secondary btn-sm hide-mobile">登录</a>
+        <a href="../auth/register.html" class="btn btn-primary btn-sm">免费注册</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 头部 -->
+  <section class="guides-header">
+    <div class="container">
+      <h1>📚 攻略中心</h1>
+      <p>三角洲行动最新、最全的游戏攻略，助你成为战场精英</p>
+      
+      <div class="guides-tabs">
+        <button class="guides-tab active" data-category="all">全部攻略</button>
+        <button class="guides-tab" data-category="weapon">武器改装</button>
+        <button class="guides-tab" data-category="activity">活动攻略</button>
+        <button class="guides-tab" data-category="newbie">新手教学</button>
+        <button class="guides-tab" data-category="advanced">进阶技巧</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="guides-grid" id="guidesGrid">
+      <!-- 攻略卡片 1 -->
+      <a href="guide-detail.html" class="guide-card" data-category="activity">
+        <div class="guide-card-image">
+          <img src="../picture/guns_三角洲行动.webp" alt="哈夫克货载直升机活动攻略" onerror="this.style.display='none';this.parentElement.innerHTML='🚁'">
+          <span class="guide-card-tag new">最新</span>
+        </div>
+        <div class="guide-card-content">
+          <div class="guide-card-category">活动攻略</div>
+          <h3 class="guide-card-title">哈夫克货载直升机活动攻略</h3>
+          <p class="guide-card-desc">哈夫克货载直升机这个活动是三角洲行动3月13日推出的活动，这次的活动地图包含了零号大坝、长弓溪谷、巴克什、航天基地，只要击落挂钩就可以获得航空箱。</p>
+          <div class="guide-card-meta">
+            <span>2024-03-16</span>
+            <div class="guide-card-stats">
+              <span>👁️ 8,234</span>
+              <span>💬 45</span>
+            </div>
+          </div>
+        </div>
+      </a>
+      
+      <!-- 攻略卡片 2 -->
+      <a href="guide-detail.html" class="guide-card" data-category="activity">
+        <div class="guide-card-image">
+          <img src="../picture/protect_三角洲行动.webp" alt="哈夫克回收平台攻略" onerror="this.style.display='none';this.parentElement.innerHTML='📦'">
+          <span class="guide-card-tag hot">热门</span>
+        </div>
+        <div class="guide-card-content">
+          <div class="guide-card-category">活动攻略</div>
+          <h3 class="guide-card-title">哈夫克回收平台攻略</h3>
+          <p class="guide-card-desc">三角洲行动最近推出的哈夫克回收平台这个活动，在这个活动中玩家需要进入对局带出物资，然后在活动页面进行回收才可以获取积分。</p>
+          <div class="guide-card-meta">
+            <span>2024-03-07</span>
+            <div class="guide-card-stats">
+              <span>👁️ 15,678</span>
+              <span>💬 89</span>
+            </div>
+          </div>
+        </div>
+      </a>
+      
+      <!-- 攻略卡片 3 -->
+      <a href="guide-detail.html" class="guide-card" data-category="weapon">
+        <div class="guide-card-image">
+          <img src="../picture/guns_AK-12突擊步槍.png" alt="S8赛季全武器改装方案" onerror="this.style.display='none';this.parentElement.innerHTML='🔫'">
+          <span class="guide-card-tag hot">热门</span>
+        </div>
+        <div class="guide-card-content">
+          <div class="guide-card-category">武器改装</div>
+          <h3 class="guide-card-title">S8赛季全武器改装方案</h3>
+          <p class="guide-card-desc">三角洲行动s8赛季对很多的枪械进行了调整，同时也新增了很多的枪械配件，这就导致s7赛季部分的改枪需要重新进行调整。</p>
+          <div class="guide-card-meta">
+            <span>2024-02-03</span>
+            <div class="guide-card-stats">
+              <span>👁️ 45,234</span>
+              <span>💬 256</span>
+            </div>
+          </div>
+        </div>
+      </a>
+      
+      <!-- 攻略卡片 4 -->
+      <a href="guide-detail.html" class="guide-card" data-category="weapon">
+        <div class="guide-card-image">
+          <img src="../picture/guns_AWM狙擊步槍.png" alt="S8赛季AWM改装方案" onerror="this.style.display='none';this.parentElement.innerHTML='🎯'">
+        </div>
+        <div class="guide-card-content">
+          <div class="guide-card-category">武器改装</div>
+          <h3 class="guide-card-title">S8赛季AWM改装方案分享</h3>
+          <p class="guide-card-desc">AWM是三角洲这款游戏里的众生平等神器，需要搭配特定的红弹使用，大部分情况下只要击中头或者身体就是一枪秒。</p>
+          <div class="guide-card-meta">
+            <span>2024-02-10</span>
+            <div class="guide-card-stats">
+              <span>👁️ 23,456</span>
+              <span>💬 134</span>
+            </div>
+          </div>
+        </div>
+      </a>
+      
+      <!-- 攻略卡片 5 -->
+      <a href="guide-detail.html" class="guide-card" data-category="weapon">
+        <div class="guide-card-image">
+          <img src="../picture/guns_MP7.png" alt="S8赛季MP7改装方案" onerror="this.style.display='none';this.parentElement.innerHTML='🔫'">
+        </div>
+        <div class="guide-card-content">
+          <div class="guide-card-category">武器改装</div>
+          <h3 class="guide-card-title">S8赛季MP7改装方案分享</h3>
+          <p class="guide-card-desc">MP7冲锋枪在s7赛季可以说是大放异彩，搭配麦晓雯的女鬼流可以非常快的移动，而且没有太大的声音。</p>
+          <div class="guide-card-meta">
+            <span>2024-02-10</span>
+            <div class="guide-card-stats">
+              <span>👁️ 18,765</span>
+              <span>💬 98</span>
+            </div>
+          </div>
+        </div>
+      </a>
+      
+      <!-- 攻略卡片 6 -->
+      <a href="guide-detail.html" class="guide-card" data-category="advanced">
+        <div class="guide-card-image">
+          <img src="../picture/protect_泰坦防彈裝甲.png" alt="组队实战攻略" onerror="this.style.display='none';this.parentElement.innerHTML='👥'">
+        </div>
+        <div class="guide-card-content">
+          <div class="guide-card-category">进阶技巧</div>
+          <h3 class="guide-card-title">组队实战攻略</h3>
+          <p class="guide-card-desc">游戏《三角洲行动》组队核心在于干员互补+明确分工+高效沟通+战术协同，优先采用1突击+1侦察+1支援的均衡配置。</p>
+          <div class="guide-card-meta">
+            <span>2024-02-10</span>
+            <div class="guide-card-stats">
+              <span>👁️ 12,345</span>
+              <span>💬 76</span>
+            </div>
+          </div>
+        </div>
+      </a>
+      
+      <!-- 攻略卡片 7 -->
+      <a href="guide-detail.html" class="guide-card" data-category="newbie">
+        <div class="guide-card-image">
+          <img src="../picture/protect_金剛避彈衣.png" alt="修脚新手速成攻略" onerror="this.style.display='none';this.parentElement.innerHTML='🦶'">
+        </div>
+        <div class="guide-card-content">
+          <div class="guide-card-category">新手教学</div>
+          <h3 class="guide-card-title">修脚新手速成攻略</h3>
+          <p class="guide-card-desc">游戏《三角洲行动》中修脚指专打敌人腿部（无防具保护）的高效打法，用高四肢伤害倍率子弹可无视敌方护甲快速击倒。</p>
+          <div class="guide-card-meta">
+            <span>2024-02-10</span>
+            <div class="guide-card-stats">
+              <span>👁️ 9,876</span>
+              <span>💬 54</span>
+            </div>
+          </div>
+        </div>
+      </a>
+      
+      <!-- 攻略卡片 8 -->
+      <a href="guide-detail.html" class="guide-card" data-category="newbie">
+        <div class="guide-card-image">
+          <img src="../picture/guns_M4A1突擊步槍.png" alt="六级弹获得方式" onerror="this.style.display='none';this.parentElement.innerHTML='🔴'">
+        </div>
+        <div class="guide-card-content">
+          <div class="guide-card-category">新手教学</div>
+          <h3 class="guide-card-title">六级弹获得方式</h3>
+          <p class="guide-card-desc">《三角洲行动》游戏中，六级弹（红弹）是最高穿透的顶级弹药，主要靠绝密地图搜箱、交易行购买、特勤处自制等方式获取。</p>
+          <div class="guide-card-meta">
+            <span>2024-02-10</span>
+            <div class="guide-card-stats">
+              <span>👁️ 34,567</span>
+              <span>💬 187</span>
+            </div>
+          </div>
+        </div>
+      </a>
+      
+      <!-- 攻略卡片 9 -->
+      <a href="guide-detail.html" class="guide-card" data-category="advanced">
+        <div class="guide-card-image">
+          <img src="../picture/protect_DAS 防彈頭盔.png" alt="哈德森打法思路" onerror="this.style.display='none';this.parentElement.innerHTML='💀'">
+        </div>
+        <div class="guide-card-content">
+          <div class="guide-card-category">进阶技巧</div>
+          <h3 class="guide-card-title">哈德森打法思路</h3>
+          <p class="guide-card-desc">《三角洲行动》哈德森仅在航天基地机密/绝密局刷新，需先清码头一楼鼠道的4名精英卫队+智能战车拿A卡。</p>
+          <div class="guide-card-meta">
+            <span>2024-02-05</span>
+            <div class="guide-card-stats">
+              <span>👁️ 28,901</span>
+              <span>💬 156</span>
+            </div>
+          </div>
+        </div>
+      </a>
+      
+      <!-- 攻略卡片 10 -->
+      <a href="guide-detail.html" class="guide-card" data-category="activity">
+        <div class="guide-card-image">
+          <img src="../picture/guns_SCAR-H戰鬥步槍.png" alt="赤枭巡猎玩法介绍" onerror="this.style.display='none';this.parentElement.innerHTML='🦅'">
+          <span class="guide-card-tag new">最新</span>
+        </div>
+        <div class="guide-card-content">
+          <div class="guide-card-category">活动攻略</div>
+          <h3 class="guide-card-title">S8赤枭巡猎玩法介绍</h3>
+          <p class="guide-card-desc">《三角洲行动》S8赤枭巡猎是双身份非对称对抗玩法，核心是扮演赤枭（赛伊德）或卫队（亲卫），在零号大坝、巴克什、航天基地完成对抗。</p>
+          <div class="guide-card-meta">
+            <span>2024-02-11</span>
+            <div class="guide-card-stats">
+              <span>👁️ 56,789</span>
+              <span>💬 312</span>
+            </div>
+          </div>
+        </div>
+      </a>
+      
+      <!-- 攻略卡片 11 -->
+      <a href="guide-detail.html" class="guide-card" data-category="weapon">
+        <div class="guide-card-image">
+          <img src="../picture/guns_M14射手步槍.png" alt="S8赛季M14改装方案" onerror="this.style.display='none';this.parentElement.innerHTML='🔫'">
+        </div>
+        <div class="guide-card-content">
+          <div class="guide-card-category">武器改装</div>
+          <h3 class="guide-card-title">S8赛季M14改装方案分享</h3>
+          <p class="guide-card-desc">M14虽然是一个上线时间很长的枪械，但是这把枪的强度一直都非常的高，这个赛季也是能够排入T0级别的枪械。</p>
+          <div class="guide-card-meta">
+            <span>2024-02-10</span>
+            <div class="guide-card-stats">
+              <span>👁️ 15,432</span>
+              <span>💬 87</span>
+            </div>
+          </div>
+        </div>
+      </a>
+      
+      <!-- 攻略卡片 12 -->
+      <a href="guide-detail.html" class="guide-card" data-category="newbie">
+        <div class="guide-card-image">
+          <img src="../picture/protect_GT5指揮官頭盔.png" alt="S8更新后帧数低解决方法" onerror="this.style.display='none';this.parentElement.innerHTML='⚙️'">
+        </div>
+        <div class="guide-card-content">
+          <div class="guide-card-category">新手教学</div>
+          <h3 class="guide-card-title">S8更新后帧数低解决方法</h3>
+          <p class="guide-card-desc">解决《三角洲行动》S8帧数低的核心是强制启用独显并拉满系统性能：先在NVIDIA控制面板确保游戏使用独显运行。</p>
+          <div class="guide-card-meta">
+            <span>2024-02-04</span>
+            <div class="guide-card-stats">
+              <span>👁️ 67,890</span>
+              <span>💬 423</span>
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+    
+    <!-- 空状态 -->
+    <div class="empty-state" id="emptyState" style="display:none;">
+      <div class="empty-state-icon">📭</div>
+      <h3 style="font-size:var(--text-xl);font-weight:600;margin-bottom:var(--space-2);">暂无相关攻略</h3>
+      <p style="color:var(--text-secondary);">该分类下暂时没有攻略，敬请期待</p>
+    </div>
+    
+    <!-- 分页 -->
+    <div class="pagination mt-8" id="pagination">
+      <button class="pagination-item" id="prevPage" onclick="changePage(-1)">‹</button>
+      <button class="pagination-item active" data-page="1" onclick="goToPage(1)">1</button>
+      <button class="pagination-item" data-page="2" onclick="goToPage(2)">2</button>
+      <button class="pagination-item" id="nextPage" onclick="changePage(1)">›</button>
+    </div>
+  </div>
+
+  <!-- 页脚 -->
+  <footer class="footer mt-8">
+    <div class="container">
+      <div class="footer-bottom" style="margin-top:0;padding-top:0;border-top:none;">
+        <p>© 2024 Delta Trade. 保留所有权利。</p>
+        <p class="mt-2" style="font-size: 12px;">攻略内容来源于游侠网，仅供学习参考。</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/theme.js"></script>
+  <script>
+    // 全局状态
+    const state = {
+      currentPage: 1,
+      itemsPerPage: 6,
+      currentCategory: 'all'
+    };
+    
+    const guidesGrid = document.getElementById('guidesGrid');
+    const emptyState = document.getElementById('emptyState');
+    const allGuides = Array.from(guidesGrid.querySelectorAll('.guide-card'));
+    
+    // 分类筛选
+    document.querySelectorAll('.guides-tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.guides-tab').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        state.currentCategory = this.dataset.category;
+        state.currentPage = 1;
+        applyFilters();
+      });
+    });
+    
+    // 应用筛选
+    function applyFilters() {
+      let filteredGuides = allGuides;
+      
+      if (state.currentCategory !== 'all') {
+        filteredGuides = allGuides.filter(guide => 
+          guide.dataset.category === state.currentCategory
+        );
+      }
+      
+      // 分页
+      const totalPages = Math.ceil(filteredGuides.length / state.itemsPerPage) || 1;
+      const startIndex = (state.currentPage - 1) * state.itemsPerPage;
+      const endIndex = startIndex + state.itemsPerPage;
+      const pageGuides = filteredGuides.slice(startIndex, endIndex);
+      
+      // 显示/隐藏
+      allGuides.forEach(guide => guide.style.display = 'none');
+      pageGuides.forEach(guide => {
+        guide.style.display = '';
+        guide.style.animation = 'fadeIn 0.3s ease';
+      });
+      
+      // 空状态
+      if (filteredGuides.length === 0) {
+        emptyState.style.display = '';
+        guidesGrid.style.display = 'none';
+      } else {
+        emptyState.style.display = 'none';
+        guidesGrid.style.display = '';
+      }
+      
+      updatePagination(totalPages);
+    }
+    
+    // 分页控制
+    function updatePagination(totalPages) {
+      const pagination = document.getElementById('pagination');
+      const pageButtons = pagination.querySelectorAll('[data-page]');
+      
+      pageButtons.forEach((btn, index) => {
+        const pageNum = index + 1;
+        if (pageNum <= totalPages) {
+          btn.style.display = '';
+          btn.classList.toggle('active', pageNum === state.currentPage);
+        } else {
+          btn.style.display = 'none';
+        }
+      });
+      
+      document.getElementById('prevPage').disabled = state.currentPage === 1;
+      document.getElementById('nextPage').disabled = state.currentPage === totalPages;
+    }
+    
+    function goToPage(page) {
+      state.currentPage = page;
+      applyFilters();
+      window.scrollTo({ top: 200, behavior: 'smooth' });
+    }
+    
+    function changePage(delta) {
+      const newPage = state.currentPage + delta;
+      if (newPage >= 1) {
+        state.currentPage = newPage;
+        applyFilters();
+        window.scrollTo({ top: 200, behavior: 'smooth' });
+      }
+    }
+    
+    // 初始化
+    applyFilters();
+    
+    // 动画样式
+    if (!document.getElementById('guides-animations')) {
+      const style = document.createElement('style');
+      style.id = 'guides-animations';
+      style.textContent = `
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .pagination-item:disabled { opacity: 0.5; cursor: not-allowed; }
+      `;
+      document.head.appendChild(style);
+    }
+  </script>
+</body>
+</html>
