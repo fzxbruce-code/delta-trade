@@ -334,6 +334,16 @@
       
       <!-- 主内容区 -->
       <main class="main-content">
+        <!-- 购买/租赁切换 -->
+        <div class="mode-tabs" style="display:flex;gap:var(--space-2);margin-bottom:var(--space-4);">
+          <button class="mode-tab active" data-mode="buy" onclick="switchMode('buy')" style="flex:1;padding:var(--space-3);border-radius:var(--radius-lg);border:2px solid var(--primary-500);background:var(--primary-500);color:white;font-weight:600;cursor:pointer;transition:all 0.2s;">
+            🛒 购买道具
+          </button>
+          <button class="mode-tab" data-mode="rent" onclick="switchMode('rent')" style="flex:1;padding:var(--space-3);border-radius:var(--radius-lg);border:2px solid var(--border-primary);background:transparent;color:var(--text-secondary);font-weight:600;cursor:pointer;transition:all 0.2s;">
+            ⏰ 租赁道具
+          </button>
+        </div>
+        
         <div class="toolbar">
           <div class="results-count">
             找到 <strong>2,458</strong> 件道具
@@ -989,8 +999,67 @@
       certifiedOnly: false,
       bargainOnly: false,
       urgentOnly: false,
-      searchKeyword: ''
+      searchKeyword: '',
+      mode: 'buy' // 'buy' 或 'rent'
     };
+    
+    // ========== 购买/租赁模式切换 ==========
+    function switchMode(mode) {
+      state.mode = mode;
+      
+      // 更新Tab样式
+      document.querySelectorAll('.mode-tab').forEach(tab => {
+        if (tab.dataset.mode === mode) {
+          tab.classList.add('active');
+          tab.style.background = 'var(--primary-500)';
+          tab.style.borderColor = 'var(--primary-500)';
+          tab.style.color = 'white';
+        } else {
+          tab.classList.remove('active');
+          tab.style.background = 'transparent';
+          tab.style.borderColor = 'var(--border-primary)';
+          tab.style.color = 'var(--text-secondary)';
+        }
+      });
+      
+      // 更新价格显示
+      document.querySelectorAll('.item-card').forEach(card => {
+        const priceEl = card.querySelector('.item-card-current');
+        const originalPrice = parseFloat(card.dataset.price);
+        
+        if (mode === 'rent') {
+          // 租金 = 市场价 × 0.001（每天约0.1%）
+          const dailyRent = (originalPrice * 0.001).toFixed(2);
+          priceEl.innerHTML = `¥${dailyRent}<span style="font-size:12px;color:var(--success-500);">/天起</span>`;
+          
+          // 添加租赁标签
+          let rentBadge = card.querySelector('.rent-badge');
+          if (!rentBadge) {
+            rentBadge = document.createElement('span');
+            rentBadge.className = 'rent-badge';
+            rentBadge.style.cssText = 'position:absolute;top:8px;right:8px;background:var(--success-500);color:white;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;';
+            rentBadge.textContent = '可租';
+            card.querySelector('.item-card-image').appendChild(rentBadge);
+          }
+          rentBadge.style.display = 'block';
+        } else {
+          // 恢复购买价格
+          priceEl.innerHTML = `¥${originalPrice}`;
+          
+          // 隐藏租赁标签
+          const rentBadge = card.querySelector('.rent-badge');
+          if (rentBadge) rentBadge.style.display = 'none';
+        }
+      });
+      
+      // 更新结果统计文字
+      const resultsText = document.querySelector('.results-count');
+      if (mode === 'rent') {
+        resultsText.innerHTML = resultsText.innerHTML.replace('件道具', '件可租赁');
+      } else {
+        resultsText.innerHTML = resultsText.innerHTML.replace('件可租赁', '件道具');
+      }
+    }
     
     // ========== DOM 元素 ==========
     const itemsGrid = document.getElementById('itemsGrid');
