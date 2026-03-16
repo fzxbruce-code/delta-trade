@@ -1067,6 +1067,50 @@
     const resultsCount = document.querySelector('.results-count strong');
     const allItems = Array.from(itemsGrid.querySelectorAll('.item-card'));
     
+    // ========== 初始化磨损度徽章 ==========
+    function getWearInfo(wear) {
+      if (wear < 0.07) return { grade: 'FN', name: '崭新出厂', color: '#22c55e' };
+      if (wear < 0.15) return { grade: 'MW', name: '略有磨损', color: '#84cc16' };
+      if (wear < 0.38) return { grade: 'FT', name: '久经沙场', color: '#eab308' };
+      if (wear < 0.45) return { grade: 'WW', name: '破损不堪', color: '#f97316' };
+      return { grade: 'BS', name: '战痕累累', color: '#ef4444' };
+    }
+    
+    // 为每张卡片添加磨损度徽章
+    allItems.forEach(card => {
+      const wear = Math.random() * 0.5; // 生成0-0.5的随机磨损值（偏好低磨损）
+      const wearInfo = getWearInfo(wear);
+      
+      // 存储磨损值到data属性
+      card.dataset.wear = wear.toFixed(4);
+      
+      // 创建磨损度徽章
+      const wearBadge = document.createElement('span');
+      wearBadge.className = 'wear-badge';
+      wearBadge.style.cssText = `
+        position: absolute;
+        bottom: 8px;
+        left: 8px;
+        background: ${wearInfo.color};
+        color: white;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      `;
+      wearBadge.textContent = wearInfo.grade;
+      wearBadge.title = `${wearInfo.name} (${wear.toFixed(4)})`;
+      
+      // 添加到图片容器
+      const imageContainer = card.querySelector('.item-card-image');
+      if (imageContainer) {
+        imageContainer.style.position = 'relative';
+        imageContainer.appendChild(wearBadge);
+      }
+    });
+    
     // ========== 分类筛选 ==========
     document.querySelectorAll('.category-item').forEach(item => {
       item.addEventListener('click', function() {
