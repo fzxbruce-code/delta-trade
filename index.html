@@ -536,8 +536,42 @@
     </div>
   </footer>
 
+  <!-- 移动端导航菜单 -->
+  <nav class="mobile-nav" id="mobileNav">
+    <div class="mobile-nav-header">
+      <a href="index.html" class="navbar-brand">
+        <img src="https://buff.163.com/static/images/site/logo.png" alt="BUFF" style="height:28px;" class="logo-dark">
+        <img src="images/buff-logo-dark.png" alt="BUFF" style="height:28px;" class="logo-light">
+        <span>三角洲交易</span>
+      </a>
+      <button class="mobile-nav-close" onclick="closeMobileNav()">✕</button>
+    </div>
+    <div class="mobile-nav-links">
+      <a href="index.html" class="mobile-nav-link">🏠 首页</a>
+      <a href="marketplace.html" class="mobile-nav-link">🛒 道具市场</a>
+      <a href="tools/weapons.html" class="mobile-nav-link">🔫 武器数据库</a>
+      <a href="tools/guides.html" class="mobile-nav-link">📖 攻略中心</a>
+      <a href="auth/login.html" class="mobile-nav-link">👤 登录</a>
+      <a href="auth/register.html" class="mobile-nav-link" style="color: var(--primary-500);">🚀 免费注册</a>
+    </div>
+  </nav>
+  
   <!-- 脚本 -->
   <script src="js/theme.js"></script>
+  
+  <script>
+    // 移动端菜单控制
+    function openMobileNav() {
+      document.getElementById('mobileNav').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeMobileNav() {
+      document.getElementById('mobileNav').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    // 绑定汉堡菜单按钮
+    document.querySelector('.mobile-menu-btn')?.addEventListener('click', openMobileNav);
+  </script>
   
   <!-- 首页筛选逻辑 -->
   <script>
