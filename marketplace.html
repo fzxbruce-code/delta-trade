@@ -273,32 +273,69 @@
           <h3 class="sidebar-title">道具分类</h3>
           <ul class="category-list">
             <li class="category-item active">
-              <span>全部道具</span>
+              <span>🎯 全部道具</span>
               <span class="category-count">2,458</span>
             </li>
-            <li class="category-item">
-              <span>武器皮肤</span>
-              <span class="category-count">892</span>
+            <li class="category-item" style="font-weight:600;color:var(--text-tertiary);padding-top:var(--space-3);font-size:11px;">
+              <span>━━ 武器皮肤 ━━</span>
             </li>
             <li class="category-item">
-              <span>角色外观</span>
-              <span class="category-count">456</span>
+              <span>🔫 突击步枪</span>
+              <span class="category-count">312</span>
             </li>
             <li class="category-item">
-              <span>载具涂装</span>
+              <span>💨 冲锋枪</span>
+              <span class="category-count">186</span>
+            </li>
+            <li class="category-item">
+              <span>🎯 狙击步枪</span>
+              <span class="category-count">145</span>
+            </li>
+            <li class="category-item">
+              <span>🔥 机枪/轻机枪</span>
+              <span class="category-count">98</span>
+            </li>
+            <li class="category-item">
+              <span>🔪 霰弹枪</span>
+              <span class="category-count">76</span>
+            </li>
+            <li class="category-item">
+              <span>🔫 手枪/副武器</span>
+              <span class="category-count">124</span>
+            </li>
+            <li class="category-item" style="font-weight:600;color:var(--text-tertiary);padding-top:var(--space-3);font-size:11px;">
+              <span>━━ 角色外观 ━━</span>
+            </li>
+            <li class="category-item">
+              <span>👤 干员皮肤</span>
+              <span class="category-count">356</span>
+            </li>
+            <li class="category-item">
+              <span>🎭 面具/头盔</span>
+              <span class="category-count">167</span>
+            </li>
+            <li class="category-item">
+              <span>🎒 背包挂件</span>
+              <span class="category-count">89</span>
+            </li>
+            <li class="category-item" style="font-weight:600;color:var(--text-tertiary);padding-top:var(--space-3);font-size:11px;">
+              <span>━━ 其他道具 ━━</span>
+            </li>
+            <li class="category-item">
+              <span>🚗 载具涂装</span>
               <span class="category-count">234</span>
             </li>
             <li class="category-item">
-              <span>配件装饰</span>
-              <span class="category-count">567</span>
+              <span>🏅 挂件/吊饰</span>
+              <span class="category-count">178</span>
             </li>
             <li class="category-item">
-              <span>限定道具</span>
-              <span class="category-count">89</span>
-            </li>
-            <li class="category-item">
-              <span>通行证奖励</span>
+              <span>📜 通行证道具</span>
               <span class="category-count">220</span>
+            </li>
+            <li class="category-item">
+              <span>💎 限定/联动</span>
+              <span class="category-count">89</span>
             </li>
           </ul>
         </div>
@@ -1122,6 +1159,7 @@
       const wtbGrid = document.getElementById('wtbGrid');
       const pagination = document.getElementById('pagination');
       const resultsText = document.querySelector('.results-count');
+      if (!itemsGrid || !resultsText) return; // 容错
       const allCards = Array.from(itemsGrid.querySelectorAll('.item-card'));
       
       if (mode === 'wtb') {
@@ -1141,7 +1179,8 @@
         let rentCount = 0;
         allCards.forEach(card => {
           const originalPrice = parseFloat(card.dataset.price);
-          const priceEl = card.querySelector('.item-card-current');
+          const priceEl = card.querySelector('.item-card-price-current');
+          if (!priceEl) return; // 容错：找不到价格元素时跳过
           
           // 只有价格>200的商品支持租赁
           if (originalPrice >= 200) {
@@ -1180,9 +1219,9 @@
         allCards.forEach(card => {
           card.style.display = 'block';
           card.style.borderColor = 'var(--border-primary)';
-          const priceEl = card.querySelector('.item-card-current');
+          const priceEl = card.querySelector('.item-card-price-current');
           const originalPrice = parseFloat(card.dataset.price);
-          priceEl.innerHTML = `¥${originalPrice}`;
+          if (priceEl) priceEl.innerHTML = `¥${originalPrice}`;
           
           // 隐藏租赁标签
           const rentBadge = card.querySelector('.rent-badge');
@@ -1243,11 +1282,38 @@
     });
     
     // ========== 分类筛选 ==========
+    // 分类映射：新分类 -> 旧data-category值
+    const categoryMap = {
+      '🎯 全部道具': '全部道具',
+      '🔫 突击步枪': '武器皮肤',
+      '💨 冲锋枪': '武器皮肤',
+      '🎯 狙击步枪': '武器皮肤',
+      '🔥 机枪/轻机枪': '武器皮肤',
+      '🔪 霰弹枪': '武器皮肤',
+      '🔫 手枪/副武器': '武器皮肤',
+      '👤 干员皮肤': '角色外观',
+      '🎭 面具/头盔': '角色外观',
+      '🎒 背包挂件': '配件装饰',
+      '🚗 载具涂装': '载具涂装',
+      '🏅 挂件/吊饰': '配件装饰',
+      '📜 通行证道具': '通行证奖励',
+      '💎 限定/联动': '限定道具'
+    };
+    
     document.querySelectorAll('.category-item').forEach(item => {
+      // 跳过分组标题（包含━━的行）
+      const text = item.querySelector('span:first-child')?.textContent || '';
+      if (text.includes('━━')) {
+        item.style.cursor = 'default';
+        return;
+      }
+      
       item.addEventListener('click', function() {
         document.querySelectorAll('.category-item').forEach(i => i.classList.remove('active'));
         this.classList.add('active');
-        state.selectedCategory = this.querySelector('span:first-child').textContent;
+        const categoryText = this.querySelector('span:first-child').textContent.trim();
+        // 使用映射获取实际分类值
+        state.selectedCategory = categoryMap[categoryText] || categoryText.replace(/^[^\s]+\s*/, '');
         state.currentPage = 1;
         applyFilters();
       });
@@ -1310,8 +1376,10 @@
         const seller = item.dataset.seller.toLowerCase();
         
         // 分类筛选
-        if (state.selectedCategory !== '全部道具' && !category.includes(state.selectedCategory.replace('装饰', ''))) {
-          return false;
+        if (state.selectedCategory && state.selectedCategory !== '全部道具') {
+          if (!category.includes(state.selectedCategory.replace('装饰', ''))) {
+            return false;
+          }
         }
         
         // 稀有度筛选

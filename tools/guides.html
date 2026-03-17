@@ -127,6 +127,117 @@
       object-fit: cover;
     }
     
+    /* 游戏风格封面模板 */
+    .cover-helicopter {
+      background: linear-gradient(135deg, #0c1929 0%, #1a3a52 40%, #2d5a6b 80%, #0f2639 100%);
+      position: relative;
+    }
+    .cover-helicopter::before {
+      content: '🚁';
+      font-size: 4rem;
+      position: absolute;
+      filter: drop-shadow(0 4px 20px rgba(0,0,0,0.5));
+      animation: float 3s ease-in-out infinite;
+    }
+    .cover-helicopter::after {
+      content: '货载直升机';
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.6);
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+    
+    .cover-platform {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 40%, #0f3460 80%, #1a1a2e 100%);
+      position: relative;
+    }
+    .cover-platform::before {
+      content: '📦';
+      font-size: 4rem;
+      position: absolute;
+      filter: drop-shadow(0 4px 20px rgba(0,0,0,0.5));
+    }
+    .cover-platform::after {
+      content: '回收平台';
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.6);
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    
+    /* 武器改装封面 */
+    .cover-weapon {
+      background: linear-gradient(135deg, #1f1f1f 0%, #2d2d2d 40%, #1a1a1a 100%);
+      position: relative;
+    }
+    .cover-weapon::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 50px,
+        rgba(255,255,255,0.02) 50px,
+        rgba(255,255,255,0.02) 51px
+      );
+    }
+    
+    /* 赤枭活动封面 */
+    .cover-redowl {
+      background: linear-gradient(135deg, #2a0a0a 0%, #4a1515 40%, #6b1a1a 70%, #2a0a0a 100%);
+      position: relative;
+    }
+    .cover-redowl::before {
+      content: '🦅';
+      font-size: 4rem;
+      position: absolute;
+      filter: drop-shadow(0 0 20px rgba(255,50,50,0.5));
+    }
+    .cover-redowl::after {
+      content: '赤枭巡猎';
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      font-size: 11px;
+      color: rgba(255,200,200,0.7);
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+    
+    /* BOSS攻略封面 */
+    .cover-boss {
+      background: linear-gradient(135deg, #0d0d0d 0%, #1a0a1a 40%, #2d1a2d 70%, #0d0d0d 100%);
+      position: relative;
+    }
+    .cover-boss::before {
+      content: '💀';
+      font-size: 4rem;
+      position: absolute;
+      filter: drop-shadow(0 0 15px rgba(200,50,200,0.5));
+    }
+    .cover-boss::after {
+      content: 'BOSS';
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      font-size: 11px;
+      color: rgba(200,150,255,0.7);
+      font-weight: 600;
+      letter-spacing: 2px;
+    }
+    
     .guide-card-tag {
       position: absolute;
       top: var(--space-3);
@@ -254,8 +365,7 @@
     <div class="guides-grid" id="guidesGrid">
       <!-- 攻略卡片 1 -->
       <a href="guide-detail.html" class="guide-card" data-category="activity">
-        <div class="guide-card-image">
-          <img src="../picture/guns_三角洲行动.webp" alt="哈夫克货载直升机活动攻略" onerror="this.style.display='none';this.parentElement.innerHTML='🚁'">
+        <div class="guide-card-image cover-helicopter">
           <span class="guide-card-tag new">最新</span>
         </div>
         <div class="guide-card-content">
@@ -274,8 +384,7 @@
       
       <!-- 攻略卡片 2 -->
       <a href="guide-detail.html" class="guide-card" data-category="activity">
-        <div class="guide-card-image">
-          <img src="../picture/protect_三角洲行动.webp" alt="哈夫克回收平台攻略" onerror="this.style.display='none';this.parentElement.innerHTML='📦'">
+        <div class="guide-card-image cover-platform">
           <span class="guide-card-tag hot">热门</span>
         </div>
         <div class="guide-card-content">
@@ -409,8 +518,8 @@
       
       <!-- 攻略卡片 9 -->
       <a href="guide-detail.html" class="guide-card" data-category="advanced">
-        <div class="guide-card-image">
-          <img src="../picture/protect_DAS 防彈頭盔.png" alt="哈德森打法思路" onerror="this.style.display='none';this.parentElement.innerHTML='💀'">
+        <div class="guide-card-image cover-boss">
+          <span class="guide-card-tag hot">热门</span>
         </div>
         <div class="guide-card-content">
           <div class="guide-card-category">进阶技巧</div>
@@ -428,8 +537,7 @@
       
       <!-- 攻略卡片 10 -->
       <a href="guide-detail.html" class="guide-card" data-category="activity">
-        <div class="guide-card-image">
-          <img src="../picture/guns_SCAR-H戰鬥步槍.png" alt="赤枭巡猎玩法介绍" onerror="this.style.display='none';this.parentElement.innerHTML='🦅'">
+        <div class="guide-card-image cover-redowl">
           <span class="guide-card-tag new">最新</span>
         </div>
         <div class="guide-card-content">

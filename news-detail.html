@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="三角洲行动游戏资讯详情 - 三角洲交易">
+  <title>《三角洲行动》S3赛季「暗夜突围」今日上线 - 三角洲交易</title>
+  
+  <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/components.css">
+  
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('delta-trade-theme');
+      if (savedTheme && savedTheme !== 'system') {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      }
+    })();
+  </script>
+  
+  <style>
+    /* 文章详情页样式 */
+    .article-header {
+      background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+      padding: var(--space-8) 0 var(--space-12);
+      border-bottom: 1px solid var(--border-primary);
+    }
+    
+    .article-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-bottom: var(--space-6);
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+    }
+    
+    .article-breadcrumb a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color var(--transition-fast);
+    }
+    
+    .article-breadcrumb a:hover {
+      color: var(--primary-400);
+    }
+    
+    .article-tag {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      margin-bottom: var(--space-4);
+    }
+    
+    .tag-update { background: var(--primary-500); color: white; }
+    .tag-event { background: var(--accent-500); color: white; }
+    .tag-guide { background: var(--success-500); color: white; }
+    .tag-community { background: #a855f7; color: white; }
+    
+    .article-title {
+      font-size: var(--text-3xl);
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: var(--space-4);
+    }
+    
+    .article-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-6);
+      color: var(--text-tertiary);
+      font-size: var(--text-sm);
+    }
+    
+    .article-meta-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    
+    .article-layout {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: var(--space-8);
+      padding: var(--space-8) 0;
+    }
+    
+    @media (max-width: 1024px) {
+      .article-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    /* 文章正文 */
+    .article-content {
+      background: var(--bg-card);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-xl);
+      padding: var(--space-8);
+    }
+    
+    .article-cover {
+      width: 100%;
+      height: 400px;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      border-radius: var(--radius-lg);
+      margin-bottom: var(--space-6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .article-cover::before {
+      content: '🎮';
+      font-size: 80px;
+      opacity: 0.8;
+    }
+    
+    .article-cover::after {
+      content: 'S3 暗夜突围';
+      position: absolute;
+      bottom: 24px;
+      left: 24px;
+      font-size: 28px;
+      font-weight: 700;
+      color: white;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+    }
+    
+    .article-body {
+      font-size: var(--text-base);
+      line-height: 1.8;
+      color: var(--text-primary);
+    }
+    
+    .article-body h2 {
+      font-size: var(--text-xl);
+      font-weight: 600;
+      margin: var(--space-8) 0 var(--space-4);
+      padding-bottom: var(--space-2);
+      border-bottom: 2px solid var(--primary-500);
+    }
+    
+    .article-body h3 {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      margin: var(--space-6) 0 var(--space-3);
+      color: var(--primary-400);
+    }
+    
+    .article-body p {
+      margin-bottom: var(--space-4);
+      color: var(--text-secondary);
+    }
+    
+    .article-body ul {
+      margin: var(--space-4) 0;
+      padding-left: var(--space-6);
+    }
+    
+    .article-body li {
+      margin-bottom: var(--space-2);
+      color: var(--text-secondary);
+    }
+    
+    .article-body li::marker {
+      color: var(--primary-500);
+    }
+    
+    .highlight-box {
+      background: linear-gradient(135deg, var(--primary-500/10) 0%, var(--primary-500/5) 100%);
+      border: 1px solid var(--primary-500/30);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      margin: var(--space-6) 0;
+    }
+    
+    .highlight-box-title {
+      font-weight: 600;
+      color: var(--primary-400);
+      margin-bottom: var(--space-2);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    
+    /* 文章底部分享 */
+    .article-footer {
+      margin-top: var(--space-8);
+      padding-top: var(--space-6);
+      border-top: 1px solid var(--border-primary);
+    }
+    
+    .article-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      margin-bottom: var(--space-4);
+    }
+    
+    .article-tags span {
+      padding: 4px 12px;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-full);
+      font-size: var(--text-xs);
+      color: var(--text-secondary);
+    }
+    
+    .article-share {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+    }
+    
+    .article-share-label {
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+    }
+    
+    .share-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-full);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    
+    .share-btn:hover {
+      background: var(--primary-500);
+      border-color: var(--primary-500);
+    }
+    
+    /* 侧边栏 */
+    .article-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+    }
+    
+    .sidebar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-xl);
+      padding: var(--space-5);
+    }
+    
+    .sidebar-title {
+      font-size: var(--text-base);
+      font-weight: 600;
+      margin-bottom: var(--space-4);
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--border-primary);
+    }
+    
+    .related-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+    
+    .related-item {
+      display: flex;
+      gap: var(--space-3);
+      padding: var(--space-3);
+      border-radius: var(--radius-md);
+      transition: background var(--transition-fast);
+      cursor: pointer;
+    }
+    
+    .related-item:hover {
+      background: var(--bg-secondary);
+    }
+    
+    .related-thumb {
+      width: 64px;
+      height: 64px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+    
+    .related-info {
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .related-title {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      line-height: 1.4;
+      margin-bottom: var(--space-1);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    .related-date {
+      font-size: var(--text-xs);
+      color: var(--text-tertiary);
+    }
+    
+    /* 快速导航 */
+    .toc-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+    
+    .toc-item {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      padding: var(--space-2);
+      border-left: 2px solid transparent;
+      padding-left: var(--space-3);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    
+    .toc-item:hover {
+      color: var(--primary-400);
+      border-left-color: var(--primary-500);
+      background: var(--primary-500/5);
+    }
+    
+    .toc-item.active {
+      color: var(--primary-400);
+      border-left-color: var(--primary-500);
+      font-weight: 500;
+    }
+    
+    /* 返回按钮 */
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-3) var(--space-5);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-lg);
+      color: var(--text-secondary);
+      font-size: var(--text-sm);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      text-decoration: none;
+      margin-bottom: var(--space-6);
+    }
+    
+    .back-btn:hover {
+      border-color: var(--primary-500);
+      color: var(--primary-400);
+    }
+  </style>
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="nav">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <img src="images/logo-dark.svg" alt="三角洲交易" class="logo-dark" style="height: 32px;">
+        <img src="images/logo-light.svg" alt="三角洲交易" class="logo-light" style="height: 32px;">
+      </a>
+      
+      <div class="nav-menu">
+        <a href="marketplace.html" class="nav-link">市场</a>
+        <a href="news.html" class="nav-link active">资讯</a>
+        <a href="guides.html" class="nav-link">攻略</a>
+        <a href="tools.html" class="nav-link">工具</a>
+      </div>
+      
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
+          <span class="theme-icon-light">☀️</span>
+          <span class="theme-icon-dark">🌙</span>
+        </button>
+        <a href="#" class="btn btn-primary btn-sm">登录</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 文章头部 -->
+  <header class="article-header">
+    <div class="container">
+      <!-- 面包屑导航 -->
+      <nav class="article-breadcrumb">
+        <a href="index.html">首页</a>
+        <span>›</span>
+        <a href="news.html">游戏资讯</a>
+        <span>›</span>
+        <span>版本更新</span>
+      </nav>
+      
+      <span class="article-tag tag-update">版本更新</span>
+      
+      <h1 class="article-title">《三角洲行动》S3赛季「暗夜突围」今日上线，全新夜战玩法震撼来袭</h1>
+      
+      <div class="article-meta">
+        <div class="article-meta-item">
+          <span>📅</span>
+          <span>2025年3月15日</span>
+        </div>
+        <div class="article-meta-item">
+          <span>✍️</span>
+          <span>官方公告</span>
+        </div>
+        <div class="article-meta-item">
+          <span>👁️</span>
+          <span>12,847 阅读</span>
+        </div>
+        <div class="article-meta-item">
+          <span>💬</span>
+          <span>328 评论</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 文章主体 -->
+  <main class="container">
+    <div class="article-layout">
+      <!-- 文章内容 -->
+      <article class="article-content">
+        <div class="article-cover"></div>
+        
+        <div class="article-body">
+          <p>亲爱的特工们，《三角洲行动》S3赛季「暗夜突围」已于今日正式上线！本次更新带来了全新的夜战模式、多款限定武器皮肤，以及备受期待的新地图「黑鹰坠落」。让我们一起来看看本次更新的精彩内容！</p>
+          
+          <h2>🌙 全新夜战模式</h2>
+          <p>S3赛季最大的亮点莫过于全新的「暗夜突围」夜战模式。在这个模式中，战场将被黑暗笼罩，玩家需要借助夜视仪、战术手电等装备在黑暗中作战。</p>
+          
+          <h3>夜战核心机制</h3>
+          <ul>
+            <li><strong>动态光照系统</strong>：月光、爆炸、枪口火焰都会影响战场能见度</li>
+            <li><strong>声音定位强化</strong>：黑暗中听觉变得更加重要，脚步声传播距离增加30%</li>
+            <li><strong>夜视装备</strong>：新增三款夜视仪，各有不同的视野范围和电池续航</li>
+            <li><strong>战术照明</strong>：手电筒可以致盲敌人，但也会暴露自己位置</li>
+          </ul>
+          
+          <div class="highlight-box">
+            <div class="highlight-box-title">💡 开发者提示</div>
+            <p style="margin:0;">夜战模式下，我们建议玩家优先熟悉地图布局，并合理利用声音信息进行定位。夜视仪虽然强大，但在面对闪光弹时会产生更强的致盲效果！</p>
+          </div>
+          
+          <h2>🗺️ 新地图「黑鹰坠落」</h2>
+          <p>灵感来源于真实历史事件，「黑鹰坠落」是一张中等规模的城市巷战地图。地图设计融合了非洲城市的建筑风格，狭窄的街道和复杂的室内结构将为玩家带来紧张刺激的近距离交火体验。</p>
+          
+          <h3>地图特色</h3>
+          <ul>
+            <li><strong>坠机点</strong>：地图中心的直升机残骸是兵家必争之地</li>
+            <li><strong>市场区</strong>：密集的摊位提供了大量掩体</li>
+            <li><strong>清真寺</strong>：制高点，适合狙击手驻守</li>
+            <li><strong>地下通道</strong>：连接地图多个区域的秘密路线</li>
+          </ul>
+          
+          <h2>🔫 S3 赛季通行证</h2>
+          <p>本赛季通行证包含100个等级的丰富奖励，包括全新的「暗夜幽灵」系列武器皮肤、专属角色外观、以及限定表情动作。</p>
+          
+          <h3>精选奖励一览</h3>
+          <ul>
+            <li><strong>Lv.1</strong>：暗夜突围载入动画</li>
+            <li><strong>Lv.25</strong>：「夜鸦」M4A1 皮肤</li>
+            <li><strong>Lv.50</strong>：「暗影猎手」角色外观</li>
+            <li><strong>Lv.75</strong>：「死神降临」击杀特效</li>
+            <li><strong>Lv.100</strong>：「暗夜之王」传说级全套</li>
+          </ul>
+          
+          <div class="highlight-box">
+            <div class="highlight-box-title">🎁 限时活动</div>
+            <p style="margin:0;">S3赛季开启首周，所有玩家登录即可领取「暗夜礼包」，包含3天通行证体验、500 Haf币以及限定头像框！</p>
+          </div>
+          
+          <h2>⚖️ 平衡性调整</h2>
+          <p>根据社区反馈，我们对部分武器进行了平衡性调整：</p>
+          <ul>
+            <li><strong>AK-47</strong>：后坐力略微增加，远距离精准度下调5%</li>
+            <li><strong>MP5</strong>：近距离伤害提升8%，射速略微提升</li>
+            <li><strong>AWM</strong>：换弹速度加快0.3秒</li>
+            <li><strong>手雷</strong>：爆炸延迟从4秒调整为3.5秒</li>
+          </ul>
+          
+          <h2>🐛 问题修复</h2>
+          <ul>
+            <li>修复了部分玩家在加载地图时闪退的问题</li>
+            <li>修复了击杀特效在某些情况下不显示的BUG</li>
+            <li>修复了组队语音偶尔断连的问题</li>
+            <li>优化了服务器匹配机制，减少高延迟对局</li>
+          </ul>
+          
+          <p>以上就是S3赛季「暗夜突围」的全部更新内容。感谢各位特工一直以来的支持，我们在战场上见！</p>
+          
+          <p style="color: var(--text-tertiary); font-style: italic; margin-top: var(--space-6);">— 三角洲行动运营团队</p>
+        </div>
+        
+        <!-- 文章底部 -->
+        <footer class="article-footer">
+          <div class="article-tags">
+            <span>#S3赛季</span>
+            <span>#暗夜突围</span>
+            <span>#版本更新</span>
+            <span>#新地图</span>
+            <span>#通行证</span>
+          </div>
+          
+          <div class="article-share">
+            <span class="article-share-label">分享到：</span>
+            <button class="share-btn" title="微信">📱</button>
+            <button class="share-btn" title="微博">📢</button>
+            <button class="share-btn" title="QQ">💬</button>
+            <button class="share-btn" title="复制链接">🔗</button>
+          </div>
+        </footer>
+      </article>
+      
+      <!-- 侧边栏 -->
+      <aside class="article-sidebar">
+        <!-- 返回按钮 -->
+        <a href="news.html" class="back-btn">
+          <span>←</span>
+          <span>返回资讯列表</span>
+        </a>
+        
+        <!-- 文章目录 -->
+        <div class="sidebar-card">
+          <h3 class="sidebar-title">📑 本文目录</h3>
+          <div class="toc-list">
+            <div class="toc-item active">全新夜战模式</div>
+            <div class="toc-item">新地图「黑鹰坠落」</div>
+            <div class="toc-item">S3 赛季通行证</div>
+            <div class="toc-item">平衡性调整</div>
+            <div class="toc-item">问题修复</div>
+          </div>
+        </div>
+        
+        <!-- 相关资讯 -->
+        <div class="sidebar-card">
+          <h3 class="sidebar-title">📰 相关资讯</h3>
+          <div class="related-list">
+            <div class="related-item" onclick="location.href='news-detail.html'">
+              <div class="related-thumb">🎯</div>
+              <div class="related-info">
+                <div class="related-title">S3赛季「暗夜突围」通行证奖励一览</div>
+                <div class="related-date">2025-03-14</div>
+              </div>
+            </div>
+            <div class="related-item" onclick="location.href='news-detail.html'">
+              <div class="related-thumb">🗺️</div>
+              <div class="related-info">
+                <div class="related-title">新地图「黑鹰坠落」点位攻略抢先看</div>
+                <div class="related-date">2025-03-13</div>
+              </div>
+            </div>
+            <div class="related-item" onclick="location.href='news-detail.html'">
+              <div class="related-thumb">⚔️</div>
+              <div class="related-info">
+                <div class="related-title">S2赛季最终排名公布，赛季奖励发放中</div>
+                <div class="related-date">2025-03-10</div>
+              </div>
+            </div>
+            <div class="related-item" onclick="location.href='news-detail.html'">
+              <div class="related-thumb">🎮</div>
+              <div class="related-info">
+                <div class="related-title">三角洲行动×《使命召唤》联动预告</div>
+                <div class="related-date">2025-03-08</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 热门标签 -->
+        <div class="sidebar-card">
+          <h3 class="sidebar-title">🏷️ 热门标签</h3>
+          <div class="article-tags">
+            <span>版本更新</span>
+            <span>攻略</span>
+            <span>活动</span>
+            <span>皮肤</span>
+            <span>竞技</span>
+            <span>赛事</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- 页脚 -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <img src="images/logo-dark.svg" alt="三角洲交易" style="height: 32px; margin-bottom: var(--space-4);">
+          <p class="footer-desc">专业的三角洲行动游戏道具交易平台，安全、便捷、高效。</p>
+        </div>
+        <div class="footer-links">
+          <h4>快速链接</h4>
+          <a href="marketplace.html">道具市场</a>
+          <a href="news.html">游戏资讯</a>
+          <a href="guides.html">攻略中心</a>
+          <a href="tools.html">实用工具</a>
+        </div>
+        <div class="footer-links">
+          <h4>帮助支持</h4>
+          <a href="#">新手指南</a>
+          <a href="#">交易规则</a>
+          <a href="#">安全中心</a>
+          <a href="#">联系客服</a>
+        </div>
+        <div class="footer-links">
+          <h4>关于我们</h4>
+          <a href="#">平台介绍</a>
+          <a href="#">用户协议</a>
+          <a href="#">隐私政策</a>
+          <a href="#">商务合作</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2025 三角洲交易 Delta Trade. 保留所有权利。</p>
+        <p style="font-size: var(--text-xs); margin-top: var(--space-2);">本平台与《三角洲行动》游戏官方无关，仅为玩家提供交易服务。</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // 主题切换
+    const themeToggle = document.getElementById('themeToggle');
+    const html = document.documentElement;
+    
+    function updateTheme(theme) {
+      html.setAttribute('data-theme', theme);
+      localStorage.setItem('delta-trade-theme', theme);
+    }
+    
+    themeToggle.addEventListener('click', () => {
+      const currentTheme = html.getAttribute('data-theme') || 'dark';
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      updateTheme(newTheme);
+    });
+    
+    // 目录高亮
+    const tocItems = document.querySelectorAll('.toc-item');
+    tocItems.forEach((item, index) => {
+      item.addEventListener('click', () => {
+        tocItems.forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+        // 滚动到对应章节
+        const headings = document.querySelectorAll('.article-body h2');
+        if (headings[index]) {
+          headings[index].scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+    
+    // 分享功能
+    document.querySelectorAll('.share-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (btn.title === '复制链接') {
+          navigator.clipboard.writeText(window.location.href);
+          alert('链接已复制到剪贴板！');
+        } else {
+          alert(`分享到${btn.title}功能开发中...`);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
